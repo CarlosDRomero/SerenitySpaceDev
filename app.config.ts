@@ -1,5 +1,4 @@
 export default {
-  googleWebClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
   "owner": "serenityspaceteam",
   "name": "serenity-space-app",
   "slug": "serenity-space-app",
@@ -48,5 +47,6 @@ export default {
     "eas": {
       "projectId": "dd9c21e6-ccdf-4d33-a241-bf3da409c53c"
     }
-  }
+  },
+  googleWebClientId: process.env.GOOGLE_WEB_CLIENT_ID ?? process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
 }
