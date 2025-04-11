@@ -4,6 +4,10 @@ import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, Text, TouchableHighlight, View } from 'react-native';
 
+import {
+  GoogleSignin,
+} from '@react-native-google-signin/google-signin'
+
 const getUser = async ()=>{
   const {data: {session}} = await supabase.auth.getSession()
   if (session)
@@ -36,6 +40,8 @@ export default function HomeScreen() {
           </Text>
             
           <TouchableHighlight className="bg-red-600 px-3 h-12 items-center justify-center rounded-lg" onPress={()=> {
+            GoogleSignin.revokeAccess()
+            // GoogleSignin.signOut()
             supabase.auth.signOut()
             setUser(null)
           }}>
