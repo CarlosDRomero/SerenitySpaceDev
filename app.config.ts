@@ -27,6 +27,7 @@ export default {
   "plugins": [
     "@react-native-google-signin/google-signin",
     "expo-router",
+    "expo-build-properties",
     [
       "expo-splash-screen",
       {
@@ -34,6 +35,14 @@ export default {
         "imageWidth": 200,
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
+      },
+    ],
+    "@stream-io/video-react-native-sdk",
+    [
+      "@config-plugins/react-native-webrtc",
+      {
+        "cameraPermission": "$(PRODUCT_NAME) necesita acceso a la cámara para video",
+        "microphonePermission": "$(PRODUCT_NAME) necesita acceso al micrófono para audio"
       }
     ]
   ],

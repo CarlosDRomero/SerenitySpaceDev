@@ -41,7 +41,7 @@ export default function HomeScreen() {
             
           <TouchableHighlight className="bg-red-600 px-3 h-12 items-center justify-center rounded-lg" onPress={()=> {
             GoogleSignin.revokeAccess()
-            // GoogleSignin.signOut()
+            GoogleSignin.signOut()
             supabase.auth.signOut()
             setUser(null)
           }}>
@@ -50,6 +50,7 @@ export default function HomeScreen() {
         </View>
       }
       <Link href="/login" className='text-white underline text-xl '>Login</Link>
+      <Link href="/(videocalls)" className='text-white underline text-xl '>Test video llamadas</Link>
     </View>
   );
 }
