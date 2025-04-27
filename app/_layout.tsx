@@ -11,6 +11,7 @@ import '../global.css';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import SplashScreen from '@/components/animations/SplashScreen';
+import VideoProvider from '@/providers/VideoProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 ExpoSplashScreen.preventAutoHideAsync();
@@ -40,10 +41,12 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <StatusBar style="auto"/>
-      {
-        !animationCompleted? <SplashScreen completed_cb={animationCompletedCB}/> : <Slot/>
-      }
+      <VideoProvider>
+        <StatusBar style="auto"/>
+        {
+          !animationCompleted? <SplashScreen completed_cb={animationCompletedCB}/> : <Slot/>
+        }
+      </VideoProvider>
       
     </ThemeProvider>
   );
