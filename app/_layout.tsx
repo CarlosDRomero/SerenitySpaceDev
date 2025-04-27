@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
 import '../global.css';
-
+import {GestureHandlerRootView} from "react-native-gesture-handler"
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import SplashScreen from '@/components/animations/SplashScreen';
@@ -41,12 +41,14 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <VideoProvider>
-        <StatusBar style="auto"/>
-        {
-          !animationCompleted? <SplashScreen completed_cb={animationCompletedCB}/> : <Slot/>
-        }
-      </VideoProvider>
+      <GestureHandlerRootView>
+        <VideoProvider>
+          <StatusBar style="auto"/>
+          {
+            !animationCompleted? <SplashScreen completed_cb={animationCompletedCB}/> : <Slot/>
+          }
+        </VideoProvider>
+      </GestureHandlerRootView>
       
     </ThemeProvider>
   );
