@@ -6,6 +6,7 @@ import { ActivityIndicator, View } from "react-native";
 
 export default function VideoProvider({children}: PropsWithChildren){
   const [videoClient, setVideoClient] = useState<StreamVideoClient | null>(null)
+
   useEffect(()=>{
     const initVideoClient = async () => {
       const {data} = await supabase.auth.getSession()
@@ -18,19 +19,27 @@ export default function VideoProvider({children}: PropsWithChildren){
       }
       const client = new StreamVideoClient({
         apiKey: process.env.EXPO_PUBLIC_STREAM_VIDEO_API_KEY!,
-        tokenProvider: getStreamToken
+        tokenProvider: getStreamToken,
+        user
       });
+      console.log(`Connecting VideoClient`)
       setVideoClient(client)
     }
-    initVideoClient()
-    return ()=>{
-      if (videoClient)
-        videoClient.disconnectUser()
+    if (!videoClient) {
+      initVideoClient()
     }
-  }, [])
+
+    return () => {
+      if (videoClient){
+        console.log("Disconnecting VideoClient")
+        videoClient.disconnectUser()
+        setVideoClient(null)
+      }
+    }
+  }, [videoClient])
   if (!videoClient) {
-    return <View className="items-center">
-      <ActivityIndicator/>
+    return <View className="items-center h-full pt-12">
+      {children}
     </View>
   }
   return (
