@@ -41,13 +41,11 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <StatusBar style="light" backgroundColor='black'/>
       <GestureHandlerRootView>
-        <VideoProvider>
-          <StatusBar style="auto"/>
           {
             !animationCompleted? <SplashScreen completed_cb={animationCompletedCB}/> : <Slot/>
           }
-        </VideoProvider>
       </GestureHandlerRootView>
       
     </ThemeProvider>
