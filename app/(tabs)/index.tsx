@@ -50,7 +50,7 @@ export default function HomeScreen() {
         </View>
       }
       <Link href="/login" className='text-white underline text-xl '>Login</Link>
-      <Link href="/(videocalls)" className='text-white underline text-xl '>Test video llamadas</Link>
+      <Link href="/(messaging)/chats" className='text-white underline text-xl '>Test video llamadas</Link>
     </View>
   );
 }

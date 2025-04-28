@@ -1,8 +1,7 @@
 // TestVideoModule.tsx
-import React, { useState, useEffect } from "react";
-import { View, Button, Text } from "react-native";
-import { supabase } from "@/utils/supabase";
-import { StreamVideo, StreamCall, Call, StreamVideoClient, StreamTheme, CallContent, VideoRenderer, useStreamVideoClient } from "@stream-io/video-react-native-sdk";
+import React, { useState } from "react";
+import { View } from "react-native";
+import { StreamCall, Call, StreamTheme, CallContent, useStreamVideoClient } from "@stream-io/video-react-native-sdk";
 import BotonFormulario from "@/components/ui/BotonFormulario";
 
 
