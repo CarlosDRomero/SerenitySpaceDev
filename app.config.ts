@@ -44,6 +44,26 @@ export default {
         "cameraPermission": "$(PRODUCT_NAME) necesita acceso a la cámara para video",
         "microphonePermission": "$(PRODUCT_NAME) necesita acceso al micrófono para audio"
       }
+    ],
+    [
+      "expo-av",
+      {
+        "microphonePermission": "$(PRODUCT_NAME) would like to use your microphone for voice recording."
+      }
+    ],
+    [
+      "expo-image-picker",
+      {
+        "cameraPermission": "$(PRODUCT_NAME) would like to use your camera to share image in a message.",
+        "photosPermission": "$(PRODUCT_NAME) would like to use your device gallery to attach image in a message."
+      },
+    ],
+    [
+      "expo-media-library",
+      {
+        "photosPermission": "$(PRODUCT_NAME) would like access to your photo gallery to share image in a message.",
+        "savePhotosPermission": "$(PRODUCT_NAME) would like to save photos to your photo gallery after downloading from a message."
+      }
     ]
   ],
   "experiments": {
