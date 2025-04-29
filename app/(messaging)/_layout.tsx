@@ -7,9 +7,9 @@ export default function MessagingLayout(){
   return (
     <ChatProvider>
       <VideoProvider>
-        <SafeAreaView className="h-full w-full flex-col">
+        {/* <SafeAreaView className="h-full w-full flex-col"> */}
           <Slot/>
-        </SafeAreaView>
+        {/* </SafeAreaView> */}
       </VideoProvider>
     </ChatProvider>
   )

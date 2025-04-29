@@ -90,32 +90,23 @@ export default function ChannelScreen() {
   }
   console.log("rendering channel")
   return <>
+    <SafeAreaView>
 
       <Channel channel={channel} audioRecordingEnabled
       >
-        <View className="bg-slate-200 w-full items-center flex-row justify-between px-2" style={{paddingHorizontal: 10}}>
+        <View className="bg-slate-200 w-full items-center flex-row justify-between px-4" style={{paddingHorizontal: 10}}>
           <View className="flex-row items-center gap-x-2 py-2">
             <ChannelAvatar channel = {channel}/>
             <Text className="font-bold text-xl">{other.full_name}</Text>
           </View>
           <Ionicons name="call" size={20} color="gray" onPress={joinCall} />
         </View>
-        {/* <SafeAreaView> */}
-
-        {/* <Stack.Screen
-          options={{
-            title: 'Channel',
-            headerRight: () => (
-              
-            ),
-          }}
-        /> */}
         <MessageList />
         <SafeAreaView edges={['bottom']}>
           <MessageInput />
         </SafeAreaView>
-        {/* </SafeAreaView> */}
       </Channel>
+    </SafeAreaView>
   </>
 
 }
