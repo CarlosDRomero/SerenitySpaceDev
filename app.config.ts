@@ -27,6 +27,7 @@ export default {
   "plugins": [
     "@react-native-google-signin/google-signin",
     "expo-router",
+    "expo-image-picker", // ✅ importante para evitar el error de módulo nativo
     [
       "expo-splash-screen",
       {
