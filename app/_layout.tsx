@@ -11,7 +11,6 @@ import {GestureHandlerRootView} from "react-native-gesture-handler"
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import SplashScreen from '@/components/animations/SplashScreen';
-import VideoProvider from '@/providers/VideoProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 ExpoSplashScreen.preventAutoHideAsync();

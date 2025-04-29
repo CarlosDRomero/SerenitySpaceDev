@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ModuloGrupos from '@/components/ModuloGrupos/index';
+import ModuloGruposIndex from '@/components/ModuloGrupos/index';
+import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,14 +33,14 @@ export default function HomeScreen() {
             <TouchableOpacity>
               <Image source={require('@/assets/Iconos/img_mi_cuenta.png')} style={styles.icon} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/(messaging)/chats")}>
               <Image source={require('@/assets/Iconos/img_chats.png')} style={styles.icon} />
             </TouchableOpacity>
           </View>
 
           {/* Contenido dinámico */}
           <View style={styles.contenido}>
-            {pantalla === 'grupos' && <GruposIndex />}
+            {pantalla === 'grupos' && <ModuloGruposIndex />}
             {pantalla === 'grupos2' && <ModuloGrupos />}
           </View>
 
