@@ -21,10 +21,12 @@ export default function CallProvider({children}: PropsWithChildren){
     const checkLoading = await sound.current.getStatusAsync();
     if (checkLoading.isLoaded) return
     const result = await sound.current.loadAsync(tono, {}, true);
-    if (result.isLoaded === false) {
+    if (!result.isLoaded) {
       return console.log('Error in Loading Audio');
     }
+    console.log("Tone Loaded")
     await sound.current.setIsLoopingAsync(true)
+    await sound.current.setVolumeAsync(0.3)
   }
   const playTone = async ()=>{
     const checkLoading = await sound.current.getStatusAsync();
@@ -38,28 +40,31 @@ export default function CallProvider({children}: PropsWithChildren){
   const stopTone = async ()=>{
     const result = await sound.current.getStatusAsync();
       if (result.isLoaded) {
-        if (result.isPlaying === true) {
+        if (result.isPlaying) {
           sound.current.stopAsync();
         }
       }
   }
   useEffect(()=>{
     loadTone()
+    return () => {
+      stopTone()
+    }
   }, [])
   useEffect(()=>{
     if (!call){
-
+      stopTone()
       return
     }
     if (!isOnCallScreen){
       if (call.state.callingState === "ringing"){
         playTone()
-      }
+      } 
     }else{
       stopTone()
     }
   }, [call, isOnCallScreen])
-
+  
   return <>
     {children}
     {

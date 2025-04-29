@@ -11,7 +11,8 @@ import Animated, {
   withSpring,
   withSequence,
   Easing,
-  withDelay
+  withDelay,
+  ReduceMotion
 } from "react-native-reanimated";
 
 /*
@@ -25,7 +26,6 @@ import Animated, {
 interface SplashScreenProps{
   completed_cb: ()=>void
 }
-const intro = require("../assets/sound/intro.wav")
 export default function SplashScreen({completed_cb}: SplashScreenProps) {
   const current_offset = useSharedValue(80);
   const opacity = useSharedValue(0);
@@ -34,28 +34,30 @@ export default function SplashScreen({completed_cb}: SplashScreenProps) {
   const [index, setIndex] = useState(0);
   const [ending, setEnding] = useState<Boolean>(false);
   const message = "Serenity Space";
-  
+  const [audioLoaded, setAudioLoaded] = useState<boolean>(false)
   const sound = useRef(new Audio.Sound());
-    const playIntro = async ()=>{
+    const loadIntro = async ()=>{
       const checkLoading = await sound.current.getStatusAsync();
       if (checkLoading.isLoaded) return
-      const result = await sound.current.loadAsync(intro, {});
+      const result = await sound.current.loadAsync(require("../../assets/sound/intro.mp3"), {});
       if (result.isLoaded === false) {
         console.log('Error in Loading Audio');
       } else {
-        await sound.current.playAsync()
-        completed_cb()
+        console.log("Loaded")
+        await sound.current.setVolumeAsync(0.5)
+        setAudioLoaded(true)
       }
     }
   
-    // const stopTone = async ()=>{
-    //   const result = await sound.current.getStatusAsync();
-    //     if (result.isLoaded) {
-    //       if (result.isPlaying === true) {
-    //         sound.current.stopAsync();
-    //       }
-    //     }
-    // }
+    const playTone = async ()=>{
+      const result = await sound.current.getStatusAsync();
+        if (result.isLoaded) {
+          if (!result.isPlaying) {
+            await sound.current.playAsync()
+            setTimeout(completed_cb, 4000)
+          }
+        }
+    }
 
   const animatedStyle = useAnimatedStyle(() => ({
     bottom: current_offset.value,
@@ -64,22 +66,30 @@ export default function SplashScreen({completed_cb}: SplashScreenProps) {
   const animatedBottomLine = useAnimatedStyle(()=>({
     width: `${bottom_line_width.value}%`
   }))
+  useEffect(()=>{
+    loadIntro()
+  },[])
   useEffect(() => {
+    if (!audioLoaded) return
+    
+    if (index >= message.length / 2) playTone()
     const timingConfig: WithTimingConfig = {
-      duration: 30
+      duration: 0,
+      reduceMotion: ReduceMotion.Always
     }
     current_offset.value = withTiming(0, timingConfig);
     opacity.value = withTiming(1, timingConfig, () => {
+      
       if (index >= message.length){
         bottom_line_width.value = withDelay(500,
           withSequence(
             withTiming(50, {duration: 300, easing: Easing.in(Easing.cubic)}, ()=>runOnJS(setEnding)(true)),
             withTiming(0, {duration: 300})
           )
-        )
+          , ReduceMotion.Never)
         offset.value = withSequence(
-          withTiming(40, { duration: 400, easing: Easing.out(Easing.quad) }),
-          withSpring(0, { stiffness: 190, damping: 10 })
+          withTiming(40, { duration: 400, easing: Easing.out(Easing.quad), reduceMotion: ReduceMotion.Never}),
+          withSpring(0, { stiffness: 190, damping: 10, reduceMotion: ReduceMotion.Never })
         )
         
         return
@@ -89,17 +99,19 @@ export default function SplashScreen({completed_cb}: SplashScreenProps) {
         runOnJS(setIndex)(index + 1);
       
     });
-  }, [index]);
+  }, [index, audioLoaded]);
 
   return (
     <View className="w-full h-full bg-[#97BBDD] items-center justify-center">
-      <View className="w-full items-center gap-y-4 px-4">
+      {
+        audioLoaded &&
+        <View className="w-full items-center gap-y-4 px-4">
         <Animated.View className="flex-row" style={{bottom: offset}}>
           {message.substring(0, index + 1).split("").map((char, i) => {
             return(
             <Animated.Text
             key={index === i? "animated" : i}
-            className="text-[#b994f6] text-6xl font-bold"
+            className="text-[#b994f6] text-5xl font-bold"
             style={[ index === i && animatedStyle ]}
             >
               {char}
@@ -113,6 +125,7 @@ export default function SplashScreen({completed_cb}: SplashScreenProps) {
           <Animated.View className="border-t-4 border-[#E9D7FD]" style={animatedBottomLine}></Animated.View>
         </View>
       </View>
+      }
     </View>
   );
 }
