@@ -8,7 +8,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import GruposIndex from '@/components/grupos/index';
 import ModuloGrupos from '@/components/ModuloGrupos/index';
 
 const { width, height } = Dimensions.get('window');
