@@ -30,7 +30,7 @@ export default function HomeScreen() {
             <TouchableOpacity>
               <Image source={require('@/assets/Iconos/img_personal.png')} style={styles.icon} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/(auth)/account")}>
               <Image source={require('@/assets/Iconos/img_mi_cuenta.png')} style={styles.icon} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push("/(messaging)/chats")}>
