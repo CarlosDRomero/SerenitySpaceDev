@@ -1,10 +1,13 @@
 import { cn } from "@/cn";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useCalls } from "@stream-io/video-react-native-sdk";
 import { Href, router, useSegments } from "expo-router";
-import { PropsWithChildren, useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import { PropsWithChildren, useEffect, useRef } from "react";
+import { Pressable, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { Audio } from 'expo-av';
+
+const tono = require("../assets/sound/tone.mp3")
 
 export default function CallProvider({children}: PropsWithChildren){
   const calls = useCalls()
@@ -13,12 +16,50 @@ export default function CallProvider({children}: PropsWithChildren){
   const isOnCallScreen = segments[1] === "call";
   const {top} = useSafeAreaInsets()
 
+  const sound = useRef(new Audio.Sound());
+  const loadTone = async ()=>{
+    const checkLoading = await sound.current.getStatusAsync();
+    if (checkLoading.isLoaded) return
+    const result = await sound.current.loadAsync(tono, {}, true);
+    if (result.isLoaded === false) {
+      return console.log('Error in Loading Audio');
+    }
+    await sound.current.setIsLoopingAsync(true)
+  }
+  const playTone = async ()=>{
+    const checkLoading = await sound.current.getStatusAsync();
+    if (!checkLoading.isLoaded){
+      await loadTone()
+    }
+    if (checkLoading.isLoaded && !checkLoading.isPlaying)
+      sound.current.playAsync()
+
+  }
+  const stopTone = async ()=>{
+    const result = await sound.current.getStatusAsync();
+      if (result.isLoaded) {
+        if (result.isPlaying === true) {
+          sound.current.stopAsync();
+        }
+      }
+  }
   useEffect(()=>{
-    if (!call)
+    loadTone()
+  }, [])
+  useEffect(()=>{
+    if (!call){
+
       return
-    
+    }
+    if (!isOnCallScreen){
+      if (call.state.callingState === "ringing"){
+        playTone()
+      }
+    }else{
+      stopTone()
+    }
   }, [call, isOnCallScreen])
-  
+
   return <>
     {children}
     {

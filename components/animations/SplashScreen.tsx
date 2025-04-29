@@ -1,5 +1,6 @@
 import { cn } from "@/cn";
-import React, { useEffect, useState } from "react";
+import { Audio } from "expo-av";
+import React, { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
   useSharedValue,
@@ -24,7 +25,7 @@ import Animated, {
 interface SplashScreenProps{
   completed_cb: ()=>void
 }
-
+const intro = require("../assets/sound/intro.wav")
 export default function SplashScreen({completed_cb}: SplashScreenProps) {
   const current_offset = useSharedValue(80);
   const opacity = useSharedValue(0);
@@ -34,6 +35,28 @@ export default function SplashScreen({completed_cb}: SplashScreenProps) {
   const [ending, setEnding] = useState<Boolean>(false);
   const message = "Serenity Space";
   
+  const sound = useRef(new Audio.Sound());
+    const playIntro = async ()=>{
+      const checkLoading = await sound.current.getStatusAsync();
+      if (checkLoading.isLoaded) return
+      const result = await sound.current.loadAsync(intro, {});
+      if (result.isLoaded === false) {
+        console.log('Error in Loading Audio');
+      } else {
+        await sound.current.playAsync()
+        completed_cb()
+      }
+    }
+  
+    // const stopTone = async ()=>{
+    //   const result = await sound.current.getStatusAsync();
+    //     if (result.isLoaded) {
+    //       if (result.isPlaying === true) {
+    //         sound.current.stopAsync();
+    //       }
+    //     }
+    // }
+
   const animatedStyle = useAnimatedStyle(() => ({
     bottom: current_offset.value,
     opacity: opacity.value,
@@ -56,7 +79,7 @@ export default function SplashScreen({completed_cb}: SplashScreenProps) {
         )
         offset.value = withSequence(
           withTiming(40, { duration: 400, easing: Easing.out(Easing.quad) }),
-          withSpring(0, { stiffness: 190, damping: 10 }, ()=> runOnJS(completed_cb)())
+          withSpring(0, { stiffness: 190, damping: 10 })
         )
         
         return
