@@ -1,3 +1,4 @@
+import LogoAutenticacion from '@/components/logos/logo';
 import { BlurView } from 'expo-blur';
 import { Slot } from 'expo-router';
 import {
@@ -15,18 +16,8 @@ export default function AuthPageLayout(){
           blurRadius={1}
         >
         <View style={styles.container}>
-        <BlurView
-          intensity={10}
-          
-          experimentalBlurMethod='dimezisBlurView'
-          className="w-56 h-56 mb-10 items-center justify-center rounded-full overflow-hidden elevation-md">
-            <Image
-              source={require('../../assets/images/logo.png')}
-              style = {{}}
-            className="w-full h-full logo-image bg-black/20"
-            />
+        <LogoAutenticacion/>
 
-        </BlurView>
         <Slot/>
         </View>
       </ImageBackground>

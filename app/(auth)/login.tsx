@@ -1,3 +1,4 @@
+import BotonFormulario from '@/components/ui/BotonFormulario';
 import FormInput from '@/components/ui/FormInput';
 import GoogleButton from '@/components/ui/GoogleButton';
 import { Link } from 'expo-router';
@@ -46,9 +47,7 @@ export default function LoginScreen() {
         secureTextEntry
       />
       <Text className='text-white'>¿No tienes una cuenta? <Link className='underline' href="/sign-up">Registrate</Link></Text>
-      <TouchableHighlight className='bg-[#3C63FF88] rounded-lg justify-center items-center py-2.5 my-4' onPress={handleLogin}>
-        <Text className="text-white text-xl">Inicia sesión</Text>
-      </TouchableHighlight>
+      <BotonFormulario onPress={handleLogin} texto="Iniciar sesión"/>
       <View className="items-center m-1">
         <GoogleButton/>
       </View>
