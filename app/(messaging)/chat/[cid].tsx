@@ -1,5 +1,5 @@
 
-import { Href, Stack, router, useLocalSearchParams } from 'expo-router';
+import { Href, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,16 +9,14 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import {
   Channel,
   ChannelAvatar,
-  ChannelPreviewMessage,
   MessageInput,
   MessageList,
   useChatContext,
 } from 'stream-chat-expo';
 import { useStreamVideoClient } from '@stream-io/video-react-native-sdk';
-import { Image } from 'react-native';
 import { Profile } from '@/components/messaging/interfaces';
 import { supabase } from '@/utils/supabase';
-// import * as Crypto from 'expo-crypto';
+import * as Crypto from 'expo-crypto';
 
 export default function ChannelScreen() {
   const [channel, setChannel] = useState<ChannelType | null>(null);
@@ -64,23 +62,19 @@ export default function ChannelScreen() {
       user_id: member.user_id!,
     }));
     
-    const call = videoClient.call('development', "testing", /*Crypto.randomUUID()*/);
-    try{
-      await call.getOrCreate({
-        ring: true,
-        data: {
-          members,
-        },
-      });
+    const call = videoClient.call('development', Crypto.randomUUID());
 
-    }catch(e){
-      console.log(e)
-    }
-    console.log("Llamando?")
-    console.log(members)
+    await call.getOrCreate({
+      ring: true,
+      
+      data: {
+        members,
+      },
+    });
+
 
     // navigate to the call screen
-    router.push(`/(messaging)/call/${call.id}` as Href);
+    router.push("/(messaging)/call" as Href);
   };
 
   if (!channel || !other) {

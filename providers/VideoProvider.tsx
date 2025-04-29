@@ -39,7 +39,7 @@ export default function VideoProvider({children}: PropsWithChildren){
   }, [videoClient])
   if (!videoClient) {
     return <View className="items-center h-full pt-12">
-      {children}
+      <ActivityIndicator/>
     </View>
   }
   return (
