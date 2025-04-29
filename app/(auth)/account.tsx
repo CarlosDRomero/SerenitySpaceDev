@@ -1,6 +1,7 @@
 import { supabase } from "@/utils/supabase"
 import { GoogleSignin } from "@react-native-google-signin/google-signin"
 import { User } from "@supabase/supabase-js"
+import { router } from "expo-router"
 import { useEffect, useState } from "react"
 import { ActivityIndicator, Image, Text, TouchableHighlight, View } from "react-native"
 
@@ -43,6 +44,7 @@ export default function Account(){
           GoogleSignin.signOut()
           supabase.auth.signOut()
           setUser(null)
+          router.replace("/(auth)/login")
         }}>
           <Text className="text-white font-bold">Cerrar sesión</Text>
         </TouchableHighlight>
