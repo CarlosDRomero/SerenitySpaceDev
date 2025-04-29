@@ -80,7 +80,7 @@ export default function ChannelScreen() {
     console.log(members)
 
     // navigate to the call screen
-    router.push("/(messaging)/call/" as Href);
+    router.push(`/(messaging)/call/${call.id}` as Href);
   };
 
   if (!channel || !other) {
