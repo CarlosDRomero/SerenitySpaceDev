@@ -17,3 +17,10 @@
 └── utils.ts                 # Utilidades pequeñas si es necesario (opcional)
 
 # eas build --profile development --platform android - Construir la build
+
+
+Librerías
+    * npx expo install expo-av react-native-webview
+    * npx expo install expo-video-thumbnails
+
+eas build --platform android --profile development

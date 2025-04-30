@@ -1,0 +1,66 @@
+create table grupos_apoyo (
+  id uuid primary key default gen_random_uuid(),
+  nombre text not null,
+  descripcion text,
+  imagen_url text,
+  creador_id uuid references auth.users(id),
+  activo boolean default true,
+  creado_en timestamp with time zone default now()
+);
+
+create table modulos_grupo (
+  id uuid primary key default gen_random_uuid(),
+  grupo_id uuid references grupos_apoyo(id) on delete cascade,
+  nombre text not null,
+  orden integer default 0,
+  activo boolean default true
+);
+
+create table temas_modulo (
+  id uuid primary key default gen_random_uuid(),
+  modulo_id uuid references modulos_grupo(id) on delete cascade,
+  titulo text not null,
+  descripcion text,
+  video_youtube_url text,
+  video_supabase_url text,
+  orden integer default 0
+);
+
+create table prueba_insert (
+  id uuid primary key default gen_random_uuid(),
+  texto text
+);
+
+select * from prueba_insert
+
+alter table grupos_apoyo
+add column fijo boolean default false;
+
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'grupos_apoyo';
+
+create table foto_y_video (
+  id uuid primary key default gen_random_uuid(),
+  imagen_url text,
+  video_url text,
+  creado_en timestamp with time zone default now()
+);
+
+
+
+for INSERT
+to public
+with check (true)
+
+insert into foto_y_video (nombre_archivo, url_archivo, tipo)
+values ('test.jpg', 'https://fake-url.com/test.jpg', 'foto');
+
+
+-- Tener en cuenta las políticas para poder subir archivos
+
+create policy "Permitir subida pública"
+on storage.objects
+for insert
+to public
+with check (bucket_id = 'fotoyvideo');
