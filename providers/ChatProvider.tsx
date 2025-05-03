@@ -5,6 +5,7 @@ import { Chat, OverlayProvider } from 'stream-chat-expo';
 import { supabase } from '@/utils/supabase'; 
 import { getStreamToken } from '@/utils/token-provider';
 import { useRouter } from 'expo-router';
+import { useAuth } from './AuthProvider';
 
 
 const client = StreamChat.getInstance(process.env.EXPO_PUBLIC_STREAM_VIDEO_API_KEY!);
@@ -12,20 +13,19 @@ const client = StreamChat.getInstance(process.env.EXPO_PUBLIC_STREAM_VIDEO_API_K
 export default function ChatProvider({ children }: PropsWithChildren) {
   const [isReady, setIsReady] = useState(false);
   const navigation = useRouter()
-
+  const {profile} = useAuth()
 
   useEffect(() => {
     const connect = async () => {
-      const {data: {user}} = await supabase.auth.getUser()
-      if (!user) {
+      if (!profile) {
         console.log("Navigating")
         navigation.navigate("/(tabs)")
         return
       }
       const streamUser: User = {
-        id: user.id,
-        name: user.email,
-        image: user.user_metadata.picture
+        id: profile.id,
+        name: profile.full_name,
+        image: profile.avatar_url
       }
       await client.connectUser(
         streamUser,

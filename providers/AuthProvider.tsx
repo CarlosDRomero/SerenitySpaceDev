@@ -11,8 +11,8 @@ import { Profile } from '@/components/messaging/interfaces';
 
 type AuthContext = {
   session: Session | null;
-  user: User | null;
-  profile: any | null;
+  user?: User | null;
+  profile?: Profile | null;
 };
 
 const AuthContext = createContext<AuthContext>({
@@ -53,7 +53,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   }, [session?.user]);
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user || null, profile }}>
+    <AuthContext.Provider value={{ session, user: session?.user, profile }}>
       {children}
     </AuthContext.Provider>
   );
