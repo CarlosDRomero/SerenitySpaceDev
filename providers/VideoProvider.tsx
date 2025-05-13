@@ -3,19 +3,19 @@ import { getStreamToken } from "@/utils/token-provider";
 import { StreamVideo, StreamVideoClient, User } from "@stream-io/video-react-native-sdk";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { useAuth } from "./AuthProvider";
 
 export default function VideoProvider({children}: PropsWithChildren){
   const [videoClient, setVideoClient] = useState<StreamVideoClient | null>(null)
-
+  const {profile} = useAuth()
   useEffect(()=>{
     const initVideoClient = async () => {
-      const {data} = await supabase.auth.getSession()
-      if (!data.session) return
+      if (!profile) return
       
       const user: User = {
-        id: data.session.user.id,
-        name: data.session.user.email,
-        image: data.session.user.user_metadata.picture
+        id: profile.id,
+        name: profile.full_name,
+        image: profile.avatar_url
       }
       const client = new StreamVideoClient({
         apiKey: process.env.EXPO_PUBLIC_STREAM_VIDEO_API_KEY!,
