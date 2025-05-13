@@ -73,7 +73,8 @@
     "expo-sharing": "~13.0.1",
     "expo-clipboard": "~7.0.1",
     "expo-media-library": "~17.0.6",
-    "@react-native-picker/picker": "2.9.0"
+    "@react-native-picker/picker": "2.9.0",
+    "expo-video-thumbnails": "~9.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -16,4 +16,12 @@
 ├── BDgrupos.ts              # Funciones para consultar/insertar en Supabase (grupos, módulos, temas)
 └── utils.ts                 # Utilidades pequeñas si es necesario (opcional)
 
-# eas build --profile development --platform android - Construir la build
+# eas build --profile development --platform android - Construir la build -- Ignorar package_lock.json
+
+
+Librerías
+    * npx expo install expo-av react-native-webview
+    * npx expo install expo-video-thumbnails
+
+eas build --platform android --profile development
+npm install --"revisión de librerías faltantes"
