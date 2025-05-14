@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Text, Alert, ToastAndroid, Platform } from 'react-native';
-import { Audio } from 'expo-av';
+import { Audio, AVPlaybackStatus } from 'expo-av';
 import * as Haptics from 'expo-haptics';
 import { cn } from '@/cn';
 import AudioPlayer from './AudioPlayer';
@@ -53,7 +53,6 @@ export default function AudioRecorder({ onAudioSaved }) {
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await recordingRef.current.stopAndUnloadAsync();
-    console.log(`Audio final duration: ${recordingRef.current._finalDurationMillis}`)
     const uri = recordingRef.current.getURI();
     if (recordingRef.current._finalDurationMillis < 500){
       if (Platform.OS === "android") ToastAndroid.show("Mantén presionado mas tiempo para grabar tu audio", ToastAndroid.SHORT)
@@ -70,15 +69,13 @@ export default function AudioRecorder({ onAudioSaved }) {
     if (sound) {
       await sound.unloadAsync();
     }
-    console.log("Is recording: ", isRecording)
     const { sound: newSound } = await Audio.Sound.createAsync(
       { uri: audioUri },
       { shouldPlay: true }
     );
 
-    newSound.setOnPlaybackStatusUpdate(status => {
-      if (status.didJustFinish) {
-        console.log("Did just finished")
+    newSound.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
+      if (status.isLoaded && status.didJustFinish) {
         setIsPlaying(false);
       }
     });
@@ -98,7 +95,6 @@ export default function AudioRecorder({ onAudioSaved }) {
 
   async function discardRecording() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-    console.log(`Is recording ${!!recordingRef.current}`)
     if (sound) {
       await sound.unloadAsync();
       setSound(null);
@@ -134,21 +130,28 @@ export default function AudioRecorder({ onAudioSaved }) {
           onPressOut={stopRecording}
           delayPressIn={500}
           delayPressOut={500}
+          pressRetentionOffset={10000}
           className={cn(
-            "w-16 h-16 rounded-full flex items-center justify-center",
+            "h-16 rounded-full flex-row items-center px-4 gap-x-2",
             isRecording ? "bg-red-500" : "bg-gray-200 dark:bg-gray-700"
           )}
         >
           <View className={cn(
             isRecording ? "w-8 h-8 rounded-sm bg-white" : "w-8 h-8 rounded-full bg-red-500"
           )} />
+          <Text className='text-white font-bold text-wrap'>
+            {
+              isRecording? "Grabando..." : "Mantén pulsado para grabar audio"
+
+            }
+          </Text>
         </TouchableOpacity>
       ) : (
         <View className="w-full space-y-4">
           <View className="flex-col justify-between items-center">
-            <AudioPlayer audioUri={audioUri} timestamp={"A"} userName={"aaaa"}/>
+            <AudioPlayer audioUri={audioUri}/>
 
-            <View className="flex-row space-x-3">
+            <View className="flex-row gap-x-3">
               <TouchableOpacity
                 onPress={discardRecording}
                 className="bg-red-500 p-3 rounded-full"

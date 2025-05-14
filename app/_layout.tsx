@@ -11,13 +11,11 @@ import {GestureHandlerRootView} from "react-native-gesture-handler"
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import SplashScreen from '@/components/animations/SplashScreen';
-import TrackPlayer from 'react-native-track-player';
-import { playbackService } from '@/constants/playbackService';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 ExpoSplashScreen.preventAutoHideAsync();
 // Se inicializa el sistema de controles para audio
-// TrackPlayer.registerPlaybackService(()=>playbackService)
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [animationCompleted, setAnimationComplete] = useState<Boolean>(false);
