@@ -50,11 +50,14 @@ export interface GrupoType {
     fecha_creacion: string;
   }
   
+  export const tipos_contenido = ['ninguno', 'youtube', 'subido', 'audio'] as const
+  export type tipo_contenido_tema = typeof tipos_contenido[number]
+
   export interface TemaType {
     id_t: string;
     titulo: string;
     contenido_texto: string;
-    tipo_video: 'ninguno' | 'youtube' | 'subido'; // debe ser exactamente así
+    tipo_video: tipo_contenido_tema; // debe ser exactamente así
     media_url: string | null; // ahora media_url puede ser null
     orden: number;
     fecha_creacion: string;

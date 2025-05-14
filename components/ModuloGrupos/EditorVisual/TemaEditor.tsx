@@ -4,7 +4,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { supabase } from '@/utils/supabase';
-import { TemaType } from './editorTypes';
+import { TemaType, tipo_contenido_tema, tipos_contenido } from './editorTypes';
+import AudioRecorder from '@/components/ui/AudioRecorder';
 
 interface TemaEditorProps {
   temas: TemaType[];
@@ -17,7 +18,7 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
   const [temaActual, setTemaActual] = useState<TemaType | null>(null);
   const [titulo, setTitulo] = useState('');
   const [contenido, setContenido] = useState('');
-  const [tipoVideo, setTipoVideo] = useState<'ninguno' | 'youtube' | 'subido'>('ninguno');
+  const [tipoVideo, setTipoVideo] = useState<tipo_contenido_tema>('ninguno');
   const [mediaUrl, setMediaUrl] = useState('');
   const [progreso, setProgreso] = useState(0);
   const [subiendo, setSubiendo] = useState(false);
@@ -159,7 +160,7 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
 
           <Text style={styles.label}>Tipo de contenido</Text>
           <View style={styles.optionsRow}>
-            {['ninguno', 'youtube', 'subido'].map((tipo) => (
+            {tipos_contenido.map((tipo) => (
               <TouchableOpacity
                 key={tipo}
                 style={[styles.optionButton, tipoVideo === tipo && styles.optionSelected]}
@@ -208,7 +209,32 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
               )}
             </>
           )}
+          {tipoVideo === 'audio' && (
+            <>
+              <AudioRecorder onAudioSaved={(uri)=>{console.log(uri)}}/>
+              <TouchableOpacity
+                style={[styles.boton, subiendo && { backgroundColor: '#888' }]}
+                onPress={subirVideo}
+                disabled={subiendo}
+              >
+                <Text style={styles.botonTexto}>{subiendo ? 'Subiendo...' : 'Subir audio'}</Text>
+              </TouchableOpacity>
 
+              {progreso > 0 && progreso < 1 && (
+                <Text style={styles.progressText}>
+                  Subiendo: {(progreso * 100).toFixed(1)}%
+                </Text>
+              )}
+
+              {mediaUrl !== '' && (
+                <View style={styles.miniaturaContainer}>
+                  <Text style={{ color: '#aaa', fontSize: 12 }}>
+                    {mediaUrl.split('/').pop()}
+                  </Text>
+                </View>
+              )}
+            </>
+          )}
           {/* BOTONES */}
           <TouchableOpacity style={styles.boton} onPress={guardarCambios}>
             <Text style={styles.botonTexto}>Guardar Cambios</Text>
