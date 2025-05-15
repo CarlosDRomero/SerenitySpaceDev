@@ -8,6 +8,7 @@ import {
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase'; 
 import { Profile } from '@/components/messaging/interfaces';
+import { ActivityIndicator } from 'react-native';
 
 type AuthContext = {
   session: Session | null;
@@ -24,34 +25,33 @@ const AuthContext = createContext<AuthContext>({
 export default function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>();
+  const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
-    });
+      if (!session?.user) {
+        console.log(`Session not found: ${session}`)
+        setProfile(null);
+        setFetching(false)
+        return;
+      }
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!session?.user) {
-      setProfile(null);
-      return;
-    }
-
-    const fetchProfile = async () => {
-      let { data, error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', session.user.id)
         .single();
-      setProfile(data);
-    };
-    fetchProfile();
-  }, [session?.user]);
+        console.log(`Profile: ${data}`)
+        setProfile(data);
+      setFetching(false)
+    });
+  }, []);
 
+  if (fetching) {
+    console.log("Fetching")
+    return <ActivityIndicator/>
+  }
   return (
     <AuthContext.Provider value={{ session, user: session?.user, profile }}>
       {children}
