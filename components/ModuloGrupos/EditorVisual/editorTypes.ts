@@ -50,7 +50,7 @@ export interface GrupoType {
     fecha_creacion: string;
   }
   
-  export const tipos_contenido = ['ninguno', 'youtube', 'subido', 'audio'] as const
+  export const tipos_contenido = ['ninguno', 'video', 'audio'] as const
   export type tipo_contenido_tema = typeof tipos_contenido[number]
 
   export interface TemaType {
