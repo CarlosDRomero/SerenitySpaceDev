@@ -12,6 +12,7 @@ import { Video, ResizeMode } from 'expo-av';
 import { WebView } from 'react-native-webview';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { TemaType } from './vistaTypes';
+import AudioPlayer from '@/components/ui/AudioPlayer';
 
 interface Props {
   temasPorModulo: { [moduloId: string]: TemaType[] };
@@ -23,7 +24,7 @@ const getYouTubeEmbedUrl = (url: string) => {
   const match = url.match(
     /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/
   );
-  return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+  return match ? `https://www.youtube.com/embed/${match[1]}` : "";
 };
 
 export default function VistaContenido({
@@ -33,6 +34,7 @@ export default function VistaContenido({
 }: Props) {
   const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
   const [mostrarVideo, setMostrarVideo] = useState(false);
+  const [youtubeEmbedUrl, setYoutubeEmbedUrl] = useState("")
   const videoRef = useRef<Video>(null);
 
   const temasDelModulo = moduloSeleccionado
@@ -43,7 +45,12 @@ export default function VistaContenido({
 
   useEffect(() => {
     const generarMiniatura = async () => {
-      if (temaActual?.tipo_video === 'subido' && temaActual.media_url) {
+      if (temaActual?.tipo_video === 'video' && temaActual.media_url) {
+        const embed = getYouTubeEmbedUrl(temaActual.media_url)
+        if (embed){
+          setYoutubeEmbedUrl(embed)
+          return
+        }
         try {
           const { uri } = await VideoThumbnails.getThumbnailAsync(temaActual.media_url, {
             time: 1500,
@@ -79,61 +86,69 @@ export default function VistaContenido({
   }
 
   const { contenido_texto, tipo_video, media_url } = temaActual;
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>{temaActual.titulo}</Text>
       <Text style={styles.contenido}>{contenido_texto || 'Sin contenido.'}</Text>
-
-      {/* Video YouTube */}
-      {tipo_video === 'youtube' && media_url && (
-        <View style={styles.videoContainer}>
-          <WebView
-            source={{ uri: getYouTubeEmbedUrl(media_url) }}
-            style={styles.webView}
-            javaScriptEnabled
-            domStorageEnabled
-          />
-        </View>
-      )}
-
-      {/* Video subido */}
-      {tipo_video === 'subido' && media_url && (
+      {
+        media_url &&
         <>
-          {!mostrarVideo && thumbnailUri && (
-            <TouchableOpacity
-              onPress={() => {
-                setMostrarVideo(true);
-                setTimeout(() => {
-                  videoRef.current?.playAsync();
-                }, 100);
-              }}
-            >
-              <Image
-                source={{ uri: thumbnailUri }}
-                style={styles.miniaturaImagen}
-                resizeMode="cover"
-              />
-              <Text style={styles.miniaturaTexto}>▶ Presiona para reproducir</Text>
-            </TouchableOpacity>
-          )}
-
-          {mostrarVideo && (
-            <Video
-              ref={videoRef}
-              source={{ uri: media_url }}
-              useNativeControls
-              resizeMode={ResizeMode.CONTAIN}
-              style={styles.video}
-              onPlaybackStatusUpdate={(status) => {
-                if (status.isLoaded && status.didJustFinish) {
-                  setMostrarVideo(false); // Reiniciar cuando termina
-                }
-              }}
-            />
-          )}
+          {tipo_video === 'video' && (
+            <>
+              {
+                youtubeEmbedUrl && 
+                <View style={styles.videoContainer}>
+                  <WebView
+                    source={{ uri: youtubeEmbedUrl }}
+                    style={styles.webView}
+                    javaScriptEnabled
+                    domStorageEnabled
+                  />
+                </View>
+              }
+              {!mostrarVideo && thumbnailUri && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setMostrarVideo(true);
+                    setTimeout(() => {
+                      videoRef.current?.playAsync();
+                    }, 100);
+                  }}
+                >
+                  <Image
+                    source={{ uri: thumbnailUri }}
+                    style={styles.miniaturaImagen}
+                    resizeMode="cover"
+                  />
+                  <Text style={styles.miniaturaTexto}>▶ Presiona para reproducir</Text>
+                </TouchableOpacity>
+              )}
+  
+              {mostrarVideo && (
+                <Video
+                  ref={videoRef}
+                  source={{ uri: media_url }}
+                  useNativeControls
+                  resizeMode={ResizeMode.CONTAIN}
+                  style={styles.video}
+                  onPlaybackStatusUpdate={(status) => {
+                    if (status.isLoaded && status.didJustFinish) {
+                      setMostrarVideo(false); // Reiniciar cuando termina
+                    }
+                  }}
+                />
+              )}
+            </>
+          )
+          }
+          {
+            tipo_video === "audio" &&
+            <AudioPlayer audioUri={media_url}/>
+          }
         </>
-      )}
+      }
+      {/* Video */}
+
     </ScrollView>
   );
 }

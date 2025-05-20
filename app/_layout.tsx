@@ -14,6 +14,7 @@ import SplashScreen from '@/components/animations/SplashScreen';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 ExpoSplashScreen.preventAutoHideAsync();
+// Se inicializa el sistema de controles para audio
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

@@ -1,10 +1,13 @@
 // /components/ModuloGrupos/EditorVisual/TemaEditor.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
+
 import { supabase } from '@/utils/supabase';
-import { TemaType } from './editorTypes';
+import { TemaType, tipo_contenido_tema, tipos_contenido } from './editorTypes';
+import AudioRecorder from '@/components/ui/AudioRecorder';
+import { ArchivoDocumentPicker, ArchivoSubido, ArchivoURI, pickPorTipo } from '@/utils/files';
+import useSubirArchivo from '@/hooks/useFileUpload';
+import { cn } from '@/cn';
 
 interface TemaEditorProps {
   temas: TemaType[];
@@ -17,68 +20,34 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
   const [temaActual, setTemaActual] = useState<TemaType | null>(null);
   const [titulo, setTitulo] = useState('');
   const [contenido, setContenido] = useState('');
-  const [tipoVideo, setTipoVideo] = useState<'ninguno' | 'youtube' | 'subido'>('ninguno');
-  const [mediaUrl, setMediaUrl] = useState('');
-  const [progreso, setProgreso] = useState(0);
-  const [subiendo, setSubiendo] = useState(false);
-
+  const [tipoArchivo, setTipoArchivo] = useState<tipo_contenido_tema>('ninguno');
+  const [archivo, setArchivo] = useState<ArchivoSubido | null>(null);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [mediaUrl, setMediaUrl] = useState("");
+  const {fileUrl, progreso, subiendo} = useSubirArchivo(`${tipoArchivo}s`, archivo)
+  useEffect(()=>{
+    if (fileUrl) {
+      setArchivo(null)
+      setMediaUrl(fileUrl)
+    }
+  }, [fileUrl])
   useEffect(() => {
     const encontrado = temas.find((t) => t.id_t === temaSeleccionadoId);
     if (encontrado) {
       setTemaActual(encontrado);
       setTitulo(encontrado.titulo);
       setContenido(encontrado.contenido_texto || '');
-      setTipoVideo(encontrado.tipo_video || 'ninguno');
+      setTipoArchivo(encontrado.tipo_video || 'ninguno');
       setMediaUrl(encontrado.media_url || '');
     }
   }, [temaSeleccionadoId, temas]);
 
-  const convertirABuffer = async (uri: string) => {
-    const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
-    return Uint8Array.from(atob(base64), c => c.charCodeAt(0)).buffer;
+  const seleccionarArchivo = async () => {
+    const archivo = await pickPorTipo(`${tipoArchivo}/*`)
+    if (archivo === null) return
+    setArchivo(new ArchivoDocumentPicker(archivo))
   };
-
-  const subirVideo = async () => {
-    const result = await DocumentPicker.getDocumentAsync({ type: 'video/*' });
-    if (result.canceled || !result.assets?.[0]) return;
-
-    const archivo = result.assets[0];
-    const uri = archivo.uri;
-    const nombre = `videos/${Date.now()}_${archivo.name || 'video.mp4'}`;
-
-    setSubiendo(true);
-    setProgreso(0);
-
-    try {
-      const buffer = await convertirABuffer(uri);
-
-      const { error } = await supabase.storage
-        .from('srtgrupos')
-        .upload(nombre, buffer, {
-          contentType: archivo.mimeType || 'video/mp4',
-        });
-
-      if (error) throw error;
-
-      const { data } = supabase.storage.from('srtgrupos').getPublicUrl(nombre);
-      setMediaUrl(data.publicUrl);
-      Alert.alert('✅ Video subido correctamente');
-    } catch (e: any) {
-      Alert.alert('❌ Error al subir video', e.message || 'Desconocido');
-    }
-
-    setSubiendo(false);
-    setProgreso(1);
-  };
-
-  const cancelar = async () => {
-    if (mediaUrl) {
-      const path = mediaUrl.split('/storage/v1/object/public/srtgrupos/')[1];
-      await supabase.storage.from('srtgrupos').remove([path]);
-      setMediaUrl('');
-    }
-    setProgreso(0);
-  };
+  
 
   const guardarCambios = async () => {
     if (!temaActual) return;
@@ -86,8 +55,8 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
     const campos = {
       titulo,
       contenido_texto: contenido,
-      tipo_video: tipoVideo,
-      media_url: tipoVideo !== 'ninguno' ? mediaUrl : '',
+      tipo_video: tipoArchivo,
+      media_url: tipoArchivo !== 'ninguno' ? mediaUrl : '',
     };
 
     const { error } = await supabase
@@ -132,7 +101,7 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
       ]
     );
   };
-
+  const isYoutubeValid = youtubeUrl.startsWith("https://youtube.com/") || youtubeUrl.startsWith("https://youtu.be/")
   return (
     <View style={styles.container}>
       {temaActual ? (
@@ -159,35 +128,41 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
 
           <Text style={styles.label}>Tipo de contenido</Text>
           <View style={styles.optionsRow}>
-            {['ninguno', 'youtube', 'subido'].map((tipo) => (
+            {tipos_contenido.map((tipo) => (
               <TouchableOpacity
                 key={tipo}
-                style={[styles.optionButton, tipoVideo === tipo && styles.optionSelected]}
-                onPress={() => setTipoVideo(tipo as any)}
+                style={[styles.optionButton, tipoArchivo === tipo && styles.optionSelected]}
+                onPress={() => setTipoArchivo(tipo as any)}
               >
                 <Text style={styles.optionText}>{tipo}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          {tipoVideo === 'youtube' && (
+          {tipoArchivo === 'video' && (
             <>
               <Text style={styles.label}>URL de YouTube</Text>
-              <TextInput
-                style={styles.input}
-                value={mediaUrl}
-                onChangeText={setMediaUrl}
-                placeholder="https://youtube.com/..."
-                placeholderTextColor="#888"
-              />
-            </>
-          )}
+              <View className="flex-row gap-x-2 items-center justify-between w-full">
 
-          {tipoVideo === 'subido' && (
-            <>
+                <TextInput
+                className='w-56'
+                  style={styles.input}
+                  value={youtubeUrl}
+                  onChangeText={setYoutubeUrl}
+                  placeholder="https://youtube.com/..."
+                  placeholderTextColor="#888"
+                  />
+                <TouchableOpacity className={cn("bg-emerald-500 rounded-lg p-3", (subiendo || !isYoutubeValid) && "bg-slate-600")} 
+                disabled = {subiendo || !isYoutubeValid} onPress={()=>{
+                  if (isYoutubeValid)
+                    setMediaUrl(youtubeUrl)
+                }}>
+                  <Text className='text-white align-middle font-bold'>Aceptar</Text>
+                </TouchableOpacity>
+              </View>
               <TouchableOpacity
-                style={[styles.boton, subiendo && { backgroundColor: '#888' }]}
-                onPress={subirVideo}
+                style={[styles.boton, (subiendo) && { backgroundColor: '#888' }]}
+                onPress={seleccionarArchivo}
                 disabled={subiendo}
               >
                 <Text style={styles.botonTexto}>{subiendo ? 'Subiendo...' : 'Subir video'}</Text>
@@ -208,7 +183,34 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
               )}
             </>
           )}
+          {tipoArchivo === 'audio' && (
+            <>
+              <AudioRecorder onAudioSaved={(uri: string)=>{
+                setArchivo(new ArchivoURI(uri))
+              }}/>
+              <TouchableOpacity
+                style={[styles.boton, subiendo && { backgroundColor: '#888' }]}
+                onPress={seleccionarArchivo}
+                disabled={subiendo}
+              >
+                <Text style={styles.botonTexto}>{subiendo ? 'Subiendo...' : 'Subir audio'}</Text>
+              </TouchableOpacity>
 
+              {progreso > 0 && progreso < 1 && (
+                <Text style={styles.progressText}>
+                  Subiendo: {(progreso * 100).toFixed(1)}%
+                </Text>
+              )}
+
+              {mediaUrl !== '' && (
+                <View style={styles.miniaturaContainer}>
+                  <Text style={{ color: '#aaa', fontSize: 12 }}>
+                    {mediaUrl.split('/').pop()}
+                  </Text>
+                </View>
+              )}
+            </>
+          )}
           {/* BOTONES */}
           <TouchableOpacity style={styles.boton} onPress={guardarCambios}>
             <Text style={styles.botonTexto}>Guardar Cambios</Text>

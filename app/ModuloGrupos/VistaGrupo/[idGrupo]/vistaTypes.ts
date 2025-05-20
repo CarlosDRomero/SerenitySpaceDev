@@ -1,5 +1,7 @@
 // Tipos para el paquete VistaGrupo
 
+import { tipo_contenido_tema } from "@/components/ModuloGrupos/EditorVisual/editorTypes";
+
 export interface GrupoType {
     id_g: string;
     titulo: string;
@@ -23,7 +25,7 @@ export interface GrupoType {
     id_t: string;
     titulo: string;
     contenido_texto: string;
-    tipo_video: 'ninguno' | 'youtube' | 'subido'; 
+    tipo_video: tipo_contenido_tema; 
     media_url: string | null;
     orden: number;
     fecha_creacion: string;
