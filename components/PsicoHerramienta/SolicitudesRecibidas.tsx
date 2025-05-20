@@ -44,8 +44,30 @@ export default function SolicitudesRecibidas() {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Solicitudes Pendientes:</Text>
-
-      <FlatList
+      {
+        solicitudes.map(item => 
+          <View style={styles.card} key={item.id}>
+            <Text style={styles.nombre}>{item.profiles?.full_name}</Text>
+            <Text style={styles.motivo}>Motivo: {item.motivo}</Text>
+            <Text style={styles.fecha}>Fecha: {new Date(item.fecha).toLocaleString()}</Text>
+            <View style={styles.botonesFila}>
+              <TouchableOpacity
+                style={[styles.boton, styles.aceptar]}
+                onPress={() => actualizarEstado(item.id, 'aceptado')}
+              >
+                <Text style={styles.botonTexto}>Aceptar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.boton, styles.rechazar]}
+                onPress={() => actualizarEstado(item.id, 'rechazado')}
+              >
+                <Text style={styles.botonTexto}>Rechazar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )
+      }
+      {/* <FlatList
         data={solicitudes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -69,7 +91,7 @@ export default function SolicitudesRecibidas() {
             </View>
           </View>
         )}
-      />
+      /> */}
     </View>
   );
 }

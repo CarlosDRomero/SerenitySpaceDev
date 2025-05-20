@@ -13,11 +13,27 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ModuloGrupos from '@/components/ModuloGrupos/index';
 import ModuloGruposIndex from '@/components/ModuloGrupos/index';
 import RedSocialIndex from '@/components/RedSocial/RedSocialIndex';
+import { useRolPrincipal } from '@/hooks/useRolPrincipal';
+import AlertaUsuario from '@/components/Alertas/AlertaUsuario';
 import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen() {
+
+  const { rolPrincipal, rolesUsuario, cargando } = useRolPrincipal();
+  
+    const puedeVerLista = rolPrincipal === 'admin' || rolPrincipal === 'estudiante';
+
+    // No olvidad borrar estudiante mas adelante
+    const puedeCrearEditar = rolPrincipal === 'admin' || rolPrincipal === 'psicologo' || rolPrincipal === 'tutor' || rolPrincipal === 'estudiante';
+
+
+    const esInvitado = rolPrincipal === 'invitado';
+    const tieneRolValido = ['admin', 'psicologo', 'tutor', 'estudiante'].includes(rolPrincipal || '');
+
+
+
   const [pantalla, setPantalla] = useState<'inicio' | 'grupos' | 'grupos2' | 'redsocial' | 'psicologia'>('inicio');
 
   return (
@@ -31,13 +47,23 @@ export default function HomeScreen() {
           {/* Encabezado flotante */}
           <View style={styles.header}>
 
-            
-            {/* <TouchableOpacity onPress={() => router.push('../../AdminUsers')}>              
-              <Image source={require('@/assets/Iconos/img_personal.png')} style={styles.icon} />
-            </TouchableOpacity> */}
-            <TouchableOpacity onPress={() => router.push('/switchRoles/index')}>              
+
+            <TouchableOpacity
+              onPress={() => {
+                if (puedeCrearEditar){
+                  router.push('../../AdminUsers')
+                }else if (esInvitado) {
+                  router.push('/roles/invitado/AlertaUsuario')
+                } else {
+                  router.push('/switchRoles')
+                }
+              }}
+            >           
               <Image source={require('@/assets/Iconos/img_personal.png')} style={styles.icon} />
             </TouchableOpacity>
+            {/* <TouchableOpacity onPress={() => router.push('/switchRoles')}>              
+              <Image source={require('@/assets/Iconos/img_personal.png')} style={styles.icon} />
+            </TouchableOpacity> */}
 
 
 
@@ -99,7 +125,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#fff'},
-  container: { flex: 1},
+  container: { flex: 1, width: "100%"},
   background: { flex: 1, width: '100%', height: '100%' },
   icon: { width: 65, height: 65, resizeMode: 'contain' },
   header: {
@@ -131,9 +157,11 @@ const styles = StyleSheet.create({
   },
   contenido: {
     flex: 1,
-    paddingTop: 120,     // espacio para el header flotante
-    paddingBottom: 100,  // espacio para el footer flotante
-    paddingHorizontal: 16,    
+    width: "100%",
+    paddingTop: 80,     // espacio para el header flotante
+    paddingBottom: 80,  // espacio para el footer flotante
+    
+    paddingHorizontal: 5,    
     //backgroundColor: 'rgba(255,255,255,0.8)', // fondo blanco con 80% de opacidad
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 
 export default function BienvenidaUsuario() {
   return (
@@ -8,7 +8,7 @@ export default function BienvenidaUsuario() {
         source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png' }}
         style={styles.icon}
       />
-      <Text style={styles.title}>¡Bienvenido a SerenitySpace!</Text>
+      <Text className="" style={styles.title}>¡Bienvenido a SerenitySpace!</Text>
       <Text style={styles.message}>
         Explora las secciones disponibles según tu rol.{"\n"}
         Usa el menú inferior o superior para acceder a las herramientas diseñadas para tu bienestar académico y emocional.
@@ -17,6 +17,7 @@ export default function BienvenidaUsuario() {
   );
 }
 
+const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -25,20 +26,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
+  
   icon: {
-    width: 130,
-    height: 130,
-    marginBottom: 24,
+    width: width * 0.3,
+    height: width * 0.3,
+    marginBottom: 18,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#ffffff',
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
   },
   message: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#cccccc',
     textAlign: 'center',
     lineHeight: 24,

@@ -342,7 +342,7 @@ export default function VerSesiones() {
         <Text style={styles.nombreEstudiante}>{estudianteSeleccionado.full_name}</Text>
 
         <TouchableOpacity
-          style={styles.botonCambiar}
+          style={styles.volver}
           onPress={() => {
             setEstudianteSeleccionado(null);
             setSesiones([]);
@@ -350,7 +350,7 @@ export default function VerSesiones() {
             setFiltroSesionNombre('');
           }}
         >
-          <Text style={styles.botonCambiarTexto}>Cambiar estudiante</Text>
+          <Text style={styles.volverTexto}>← Cambiar estudiante</Text>
         </TouchableOpacity>
       </View>
 

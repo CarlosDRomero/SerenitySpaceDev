@@ -1,8 +1,11 @@
 // /app/moduloGrupos/AdministradorUsuarios/types_AU.ts
 
+export const Roles = ['invitado' , 'estudiante' , 'psicologo' , 'tutor' , 'admin'] as const
+export type TipoNombreRol = typeof Roles[number]
+
 export type Rol = {
   id: number;
-  nombre: 'invitado' | 'estudiante' | 'psicologo' | 'tutor' | 'admin';
+  nombre: TipoNombreRol
 };
 
 export type UsuarioConRol = {

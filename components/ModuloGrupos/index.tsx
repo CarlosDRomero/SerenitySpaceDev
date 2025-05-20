@@ -54,8 +54,17 @@ export default function ModuloGruposIndex() {
             <Text style={styles.textoBoton}>Explorar Grupos</Text>
           </TouchableOpacity>
         )}
-        {puedeCrearEditar && (
+        
+        <ScrollView contentContainerStyle={{flexDirection: 'row', overflow: "scroll"}} horizontal={true} showsHorizontalScrollIndicator={false}>
+          {puedeCrearEditar && (
           <>
+
+            <TouchableOpacity
+              style={[styles.botonTop, pantalla === 'lista' && styles.botonActivo]}
+              onPress={() => setPantalla('lista')}
+            >
+              <Text style={styles.textoBoton}>Explorar Grupos</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={[styles.botonTop, pantalla === 'crear' && styles.botonActivo]}
               onPress={() => setPantalla('crear')}
@@ -71,6 +80,9 @@ export default function ModuloGruposIndex() {
             </TouchableOpacity>
           </>
         )}
+        </ScrollView>
+
+        
       </View>
 
       {/* Pantallas dinámicas */}

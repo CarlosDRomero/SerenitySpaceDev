@@ -111,7 +111,7 @@ export default function PsicoHerramientaIndex() {
       </View>
 
       {/* Pantalla activa */}
-      <ScrollView style={styles.scroll}>
+      <View style={styles.scroll}>
         {pantalla === 'bienvenida' && <Text style={styles.mensaje}>Bienvenido a la PsicoHerramienta</Text>}
         {pantalla === 'solicitar' && <SolicitarApoyo />}
         {pantalla === 'solicitudes' && <SolicitudesRecibidas />}
@@ -120,7 +120,7 @@ export default function PsicoHerramientaIndex() {
         {pantalla === 'ver-recomendaciones' &&
           (esEstudiante ? <VerRecomendacionesEstudiante /> : <Text style={styles.mensaje}>Tus recomendaciones</Text>)}
         {pantalla === 'recomendar-grupo' && (esPsicologo ? <CrearRecomendacion /> : <Text style={styles.mensaje}>Formulario para recomendar grupo</Text>)}
-      </ScrollView>
+      </View>
     </View>
   );
 }

@@ -20,7 +20,7 @@ export default function CarruselGruposLista({ titulo, grupos, onPressGrupo }: Ca
               descripcion={grupo.descripcion}
               imagenUrl={grupo.imagen_url}
               grupoApoyo={grupo.grupo_apoyo}
-              onPress={() => onPressGrupo(grupo.id_g)} // ✅ Ahora sí navega
+              onPress={() => onPressGrupo(grupo.id_g)} // Ahora sí navega
             />
           </View>
         ))}

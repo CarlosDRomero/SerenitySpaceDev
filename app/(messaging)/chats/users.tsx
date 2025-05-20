@@ -51,7 +51,7 @@ export default function UsersScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: "Comunidad" }} />
+      <Stack.Screen options={{ title: "Lista de Amigos" }} />
       {users ? (
         <FlatList
           contentContainerStyle={{ backgroundColor: "#fff", flexGrow: 1 }}

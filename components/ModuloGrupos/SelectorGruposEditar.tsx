@@ -14,7 +14,7 @@ export default function SelectorGruposEditar() {
     const cargar = async () => {
       setCargando(true);
       const data = await fetchGrupos();
-      console.log('🛠️ Grupos cargados:', data);
+      //console.log('Grupos cargados:', data);
       setGrupos(data);
       setCargando(false);
     };
@@ -22,14 +22,14 @@ export default function SelectorGruposEditar() {
   }, []);
 
   const seleccionarGrupo = (id: string) => {
-    console.log('🖱️ Grupo seleccionado:', id);
+    console.log('Grupo seleccionado:', id);
     setGrupoSeleccionado(id);
-    setModoEditorActivo(true); // 🔥 Ahora activamos modo editor seguro
+    setModoEditorActivo(true); // Ahora activamos modo editor seguro
   };
 
   const volverAlSelector = () => {
     setGrupoSeleccionado(null);
-    setModoEditorActivo(false); // 🔙 Al volver desactivamos modo editor
+    setModoEditorActivo(false); // Al volver desactivamos modo editor
   };
 
   if (modoEditorActivo && grupoSeleccionado) {

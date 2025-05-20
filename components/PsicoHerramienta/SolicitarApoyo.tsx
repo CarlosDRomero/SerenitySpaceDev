@@ -67,8 +67,19 @@ export default function SolicitarApoyo() {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Selecciona un psicólogo disponible:</Text>
+      {
+        psicologos.map(item => 
+          <TouchableOpacity
+            key={item.id}
+            style={[styles.item, seleccionado === item.id && styles.itemSeleccionado]}
+            onPress={() => setSeleccionado(item.id)}
+          >
+            <Text style={styles.nombre}>{item.full_name}</Text>
+          </TouchableOpacity>
 
-      <FlatList
+        )
+      }
+      {/* <FlatList
         data={psicologos}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -79,7 +90,7 @@ export default function SolicitarApoyo() {
             <Text style={styles.nombre}>{item.full_name}</Text>
           </TouchableOpacity>
         )}
-      />
+      /> */}
 
       <TextInput
         placeholder="Escribe el motivo de tu solicitud..."

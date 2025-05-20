@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/utils/supabase';
+import { TipoNombreRol, Roles } from '@/app/AdminUsers/types_AU';
 
-const jerarquia = ['admin', 'psicologo', 'tutor', 'estudiante', 'invitado'];
+const jerarquia: TipoNombreRol[] = ['admin', 'psicologo', 'tutor', 'estudiante', 'invitado'];
 
 export const useRolPrincipal = () => {
-  const [rolPrincipal, setRolPrincipal] = useState<string | null>(null);
-  const [rolesUsuario, setRolesUsuario] = useState<string[]>([]);
+  const [rolPrincipal, setRolPrincipal] = useState<TipoNombreRol | null>(null);
+  const [rolesUsuario, setRolesUsuario] = useState<TipoNombreRol[]>([]);
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
@@ -36,12 +37,12 @@ export const useRolPrincipal = () => {
         return;
       }
 
-      const nombres: string[] = data
+      const nombres: TipoNombreRol[] = data
         .map((item: any) => item.roles?.nombre)
-        .filter((nombre: string | undefined) => typeof nombre === 'string');
+        .filter((nombre: TipoNombreRol | undefined) => typeof nombre === 'string');
 
-      const rolesFinales = nombres.length > 0 ? nombres : ['invitado'];
-      const principal = jerarquia.find((r) => rolesFinales.includes(r)) ?? 'invitado';
+      const rolesFinales = nombres.length > 0 ? nombres : [Roles[0]];
+      const principal = jerarquia.find((r) => rolesFinales.includes(r)) ?? Roles[0];
 
       setRolesUsuario(rolesFinales);
       setRolPrincipal(principal);

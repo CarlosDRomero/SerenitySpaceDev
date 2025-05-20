@@ -12,6 +12,8 @@ import {GestureHandlerRootView} from "react-native-gesture-handler"
 import { useColorScheme } from '@/hooks/useColorScheme';
 import SplashScreen from '@/components/animations/SplashScreen';
 
+import AuthProvider from "@/providers/AuthProvider"
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 ExpoSplashScreen.preventAutoHideAsync();
 // Se inicializa el sistema de controles para audio
@@ -40,6 +42,7 @@ export default function RootLayout() {
   
 
   return (
+    <AuthProvider>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar style="light" backgroundColor='black'/>
       <GestureHandlerRootView>
@@ -49,5 +52,6 @@ export default function RootLayout() {
       </GestureHandlerRootView>
       
     </ThemeProvider>
+    </AuthProvider>
   );
 }

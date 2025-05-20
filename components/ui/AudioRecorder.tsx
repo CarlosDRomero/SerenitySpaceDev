@@ -4,8 +4,10 @@ import { Audio, AVPlaybackStatus } from 'expo-av';
 import * as Haptics from 'expo-haptics';
 import { cn } from '@/cn';
 import AudioPlayer from './AudioPlayer';
-
-export default function AudioRecorder({ onAudioSaved }) {
+interface AudioRecorderProps {
+  onAudioSaved: (uri: string) => void
+}
+export default function AudioRecorder({ onAudioSaved }: AudioRecorderProps) {
   const recordingRef = useRef<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [audioUri, setAudioUri] = useState<string | null>(null);
@@ -133,7 +135,7 @@ export default function AudioRecorder({ onAudioSaved }) {
           pressRetentionOffset={10000}
           className={cn(
             "h-16 rounded-full flex-row items-center px-4 gap-x-2",
-            isRecording ? "bg-red-500" : "bg-gray-200 dark:bg-gray-700"
+            isRecording ? "bg-red-500" : "bg-gray-700"
           )}
         >
           <View className={cn(
