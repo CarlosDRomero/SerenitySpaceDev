@@ -1,3 +1,4 @@
+// app/(dashboard)/home.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -6,16 +7,18 @@ import {
   TouchableOpacity,
   ImageBackground,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ModuloGrupos from '@/components/ModuloGrupos/index';
 import ModuloGruposIndex from '@/components/ModuloGrupos/index';
+import RedSocialIndex from '@/components/RedSocial/RedSocialIndex';
 import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const [pantalla, setPantalla] = useState<'inicio' | 'grupos' | 'grupos2'>('inicio');
+  const [pantalla, setPantalla] = useState<'inicio' | 'grupos' | 'grupos2' | 'redsocial' | 'psicologia'>('inicio');
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -27,9 +30,17 @@ export default function HomeScreen() {
         >
           {/* Encabezado flotante */}
           <View style={styles.header}>
-            <TouchableOpacity>
+
+            
+            {/* <TouchableOpacity onPress={() => router.push('../../AdminUsers')}>              
+              <Image source={require('@/assets/Iconos/img_personal.png')} style={styles.icon} />
+            </TouchableOpacity> */}
+            <TouchableOpacity onPress={() => router.push('/switchRoles/index')}>              
               <Image source={require('@/assets/Iconos/img_personal.png')} style={styles.icon} />
             </TouchableOpacity>
+
+
+
             <TouchableOpacity onPress={() => router.push("/(auth)/account")}>
               <Image source={require('@/assets/Iconos/img_mi_cuenta.png')} style={styles.icon} />
             </TouchableOpacity>
@@ -41,31 +52,38 @@ export default function HomeScreen() {
           {/* Contenido dinámico */}
           <View style={styles.contenido}>
             {pantalla === 'grupos' && <ModuloGruposIndex />}
-            {pantalla === 'grupos2' && <ModuloGrupos />}
+            {pantalla === 'grupos2' && <ModuloGrupos />}   
+            {pantalla === 'redsocial' && <RedSocialIndex />}                     
           </View>
+
 
           {/* Footer flotante */}
           <View style={styles.footer}>
-            <TouchableOpacity onPress={() => setPantalla('inicio')}>
+            {/* <TouchableOpacity onPress={() => setPantalla('inicio')}>
+              <Image source={require('@/assets/Iconos/img_social.png')} style={styles.icon} />
+            </TouchableOpacity> */}
+
+            <TouchableOpacity onPress={() => setPantalla('redsocial')}>
               <Image source={require('@/assets/Iconos/img_social.png')} style={styles.icon} />
             </TouchableOpacity>
+
 
             <TouchableOpacity onPress={() => setPantalla('grupos')}>
               <Image source={require('@/assets/Iconos/img_grupos.png')} style={styles.icon} />
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/Mentores')}>
               <Image source={require('@/assets/Iconos/img_mentores.png')} style={styles.icon} />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setPantalla('grupos2')}>
+            {/* <TouchableOpacity onPress={() => setPantalla('grupos2')}>
               <Image
                 source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3524/3524659.png' }} // Icono de prueba
                 style={styles.icon}
               />
             </TouchableOpacity>
-
-            <TouchableOpacity>
+ */}
+            <TouchableOpacity onPress={() => router.push('/PsicoHerramienta')}>
               <Image source={require('@/assets/Iconos/img_apoyo_emocional.png')} style={styles.icon} />
             </TouchableOpacity>
 

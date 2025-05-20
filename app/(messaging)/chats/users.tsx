@@ -1,69 +1,76 @@
 import { Profile } from "@/components/messaging/interfaces";
 import UserListItem from "@/components/messaging/UserListItem";
 import { supabase } from "@/utils/supabase";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Image, Text, TouchableHighlight, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { useChatContext } from "stream-chat-expo";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
+export default function UsersScreen() {
+  const [users, setUsers] = useState<Profile[] | null>(null);
 
+  useEffect(() => {
+    const fetchAmigos = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-export default function UsersScreen(){
-  const [users, setUsers] = useState<Profile[] | null>(null)
-  const {client} = useChatContext()
-  useEffect(()=>{
-    const fetchUsers = async ()=>{
-      const {data: {user}} = await supabase.auth.getUser()
-      if (!user) return
-      const userChannels = await client.queryChannels({members: {$in: [user.id]}, last_message_at: {$exists: true}})
-      const channelsWith = await Promise.all(userChannels.map(async c => {
-        const members = await c.queryMembers({})
-        return members.members
-        .map(m => m.user_id).filter(id => id !== user.id)
-      }))
-      const {data: profiles, error} = await supabase
+      // Obtener amistades aceptadas donde esté involucrado el usuario
+      const { data: amistades, error: err } = await supabase
+        .from("amistades")
+        .select("de, para, estado")
+        .or(`de.eq.${user.id},para.eq.${user.id}`)
+        .eq("estado", "aceptado");
+
+      if (!amistades || amistades.length === 0) {
+        setUsers([]);
+        return;
+      }
+
+      // Sacar los IDs de los amigos
+      const idsAmigos = amistades.map((rel) =>
+        rel.de === user.id ? rel.para : rel.de
+      );
+
+      // Buscar sus perfiles
+      const { data: perfiles, error: errPerfiles } = await supabase
         .from("profiles")
         .select("*")
-        .not("id", "in", `(${channelsWith.flat().concat([user.id]).join(",")})`)
+        .in("id", idsAmigos);
 
-      setUsers(profiles)
-    }
-    fetchUsers()
-  }, [])
+      if (errPerfiles) {
+        console.error("Error cargando perfiles:", errPerfiles);
+        return;
+      }
+
+      setUsers(perfiles || []);
+    };
+
+    fetchAmigos();
+  }, []);
 
   return (
     <>
-      <Stack.Screen
-            options={{
-              title: "Comunidad",
-            }}
-          
-      />
-      {
-        !!users ?
+      <Stack.Screen options={{ title: "Comunidad" }} />
+      {users ? (
         <FlatList
-        contentContainerClassName="bg-white h-full w-full"
+          contentContainerStyle={{ backgroundColor: "#fff", flexGrow: 1 }}
           data={users}
-          renderItem={({item}) =>
-            <UserListItem user ={item}/>
-          }   
+          renderItem={({ item }) => <UserListItem user={item} />}
           ListEmptyComponent={
-            <View className="w-full h-full justify-center items-center">
-              <Text className="text-slate-500 text-xl text-center">Parece que no hay mas personas que puedas añadir a tu red</Text>
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 20 }}>
+              <Ionicons name="people" size={60} color="gray" />
+              <Text style={{ marginTop: 10, color: "#666", textAlign: "center" }}>
+                No tienes amigos aún o aún no hay datos.
+              </Text>
             </View>
           }
-          
-          >
-        </FlatList>
-        :
+        />
+      ) : (
         <View className="w-full h-full items-center justify-center bg-white">
-          <ActivityIndicator/>
+          <ActivityIndicator />
         </View>
-      }
-
+      )}
     </>
-  )
-
+  );
 }
