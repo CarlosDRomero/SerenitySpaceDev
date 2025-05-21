@@ -19,22 +19,27 @@ export default function ChatsScreen() {
     };
     getUser();
   }, []);
-
   return (
     <>
-      <Stack.Screen
+      <Stack.Screen        
         options={{
           title: "Conversaciones",
           headerRight: () => (
-            <View className="flex-row gap-x-8">
+            <View className="flex-row gap-x-12">
               <Link href="/(messaging)/chats/users">
-                <Ionicons name="people" size={20} color="white" />
+                <Ionicons name="people" size={30} color="white" />
               </Link>
               <Link href="/">
-                <Ionicons name="home" size={20} color="white" />
+                <Ionicons name="home" size={30} color="white" />
               </Link>
             </View>
           ),
+          headerTitleStyle: {
+            color: "white"
+          },
+          headerStyle: {
+            backgroundColor: "#333333"
+          }
         }}
       />
       {user ? (
@@ -107,10 +112,11 @@ export default function ChatsScreen() {
           }}
 
           EmptyStateIndicator={() => (
-            <SafeAreaView className="justify-center items-center" edges={["bottom"]}>
+            <SafeAreaView className="flex-1 justify-center items-center" edges={['bottom']}>
               <Ionicons name="chatbubble" size={80} color="gray" />
-              <Text>No has iniciado ninguna conversación</Text>
+              <Text className="text-center mt-2">No has iniciado ninguna conversación</Text>
             </SafeAreaView>
+
           )}
         />
       ) : (
