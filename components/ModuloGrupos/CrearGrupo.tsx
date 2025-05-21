@@ -26,7 +26,7 @@ export default function CrearGrupo() {
   const [progresoImagen, setProgresoImagen] = useState(0);
   const [progresoIcono, setProgresoIcono] = useState(0);
 
-  const puedeCrear = !subiendoImagen && !subiendoIcono && titulo.trim() && descripcion.trim();
+  const puedeCrear = !subiendoImagen && !subiendoIcono && titulo.trim() && descripcion.trim() && imagenUrl;
 
   const convertirABuffer = async (uri: string, onProgress: (bytes: number, total: number) => void) => {
     const fileInfo = await FileSystem.getInfoAsync(uri);
@@ -60,22 +60,25 @@ export default function CrearGrupo() {
         setProgreso(subido / 1024);
       });
 
+      const path = `${carpeta}/${nombre}`;
+
       const { error } = await supabase.storage
         .from('srtgrupos')
-        .upload(`${carpeta}/${nombre}`, buffer, {
+        .upload(path, buffer, {
           contentType: 'image/jpeg',
+          upsert: true,
         });
 
       if (error) {
         Alert.alert('Error al subir', error.message);
-        setSubiendo(false);
         return;
       }
 
-      const { data } = supabase.storage.from('srtgrupos').getPublicUrl(`${carpeta}/${nombre}`);
-      setUrl(data.publicUrl);
+      const { data } = supabase.storage.from('srtgrupos').getPublicUrl(path);
+      setUrl(`${data.publicUrl}?v=${Date.now()}`); // Cache busting
     } catch (e) {
-      Alert.alert('Error', 'No se pudo subir');
+      console.error(e);
+      Alert.alert('Error', 'No se pudo subir la imagen');
     } finally {
       setSubiendo(false);
     }
@@ -85,16 +88,16 @@ export default function CrearGrupo() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.7,
-      allowsEditing: true, // ✅ permite recortar
+      allowsEditing: true,
     });
 
-    if (result.canceled) return;
+    if (result.canceled || !result.assets?.length) return;
 
     const uri = result.assets[0].uri;
     const nombre = `${tipo}_${Date.now()}.jpg`;
     const carpeta = tipo === 'imagen' ? 'imagenesgrupos' : 'iconosgrupos';
 
-    subirArchivo(
+    await subirArchivo(
       uri,
       carpeta,
       nombre,
@@ -124,7 +127,10 @@ export default function CrearGrupo() {
   };
 
   const crearGrupo = async () => {
-    if (!puedeCrear) return;
+    if (!puedeCrear) {
+      Alert.alert('Faltan datos o la imagen aún no se ha subido.');
+      return;
+    }
 
     const { error } = await supabase.from('mg_grupos').insert({
       titulo,
@@ -136,7 +142,7 @@ export default function CrearGrupo() {
     });
 
     if (error) {
-      Alert.alert('Error', error.message);
+      Alert.alert('Error al crear grupo', error.message);
     } else {
       Alert.alert('✅ Grupo creado');
       cancelar();

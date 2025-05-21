@@ -7,10 +7,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/utils/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { useAuth } from '@/providers/AuthProvider';
+import { Profile } from '@/components/messaging/interfaces';
 
 export default function MiPerfil() {
-  const [perfil, setPerfil] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [perfil, setPerfil] = useState<Profile | null>(null);
   const [editando, setEditando] = useState(false);
   const [nuevoNombre, setNuevoNombre] = useState('');
   const [email, setEmail] = useState('');
@@ -19,46 +20,12 @@ export default function MiPerfil() {
   const [bio, setBio] = useState('');
   const [intereses, setIntereses] = useState('');
   const [emocional, setEmocional] = useState('');
-
-  useEffect(() => {
-    const cargarMiPerfil = async () => {
-      setLoading(true);
-      const { data: userData } = await supabase.auth.getUser();
-      const uid = userData?.user?.id;
-      const correo = userData?.user?.email;
-      setEmail(correo || '');
-
-      if (!uid) return;
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('full_name, avatar_url')
-        .eq('id', uid)
-        .single();
-
-      if (!error && data) {
-        setPerfil(data);
-        setNuevoNombre(data.full_name);
-      }
-
-      const { data: info } = await supabase
-        .from('perfil_contenido')
-        .select('biografia, intereses, estado_emocional')
-        .eq('id_profile', uid)
-        .single();
-
-      if (info) {
-        setBio(info.biografia || '');
-        setIntereses(info.intereses || '');
-        setEmocional(info.estado_emocional || '');
-      }
-
-      setLoading(false);
-    };
-
-    cargarMiPerfil();
-  }, []);
-
+  const {profile} = useAuth()
+  useEffect(()=>{
+    console.log("Profile loaded")
+    if (profile)
+    setPerfil(profile)
+  }, [profile])
   const actualizarPerfil = async () => {
     const { data: userData } = await supabase.auth.getUser();
     const uid = userData?.user?.id;
@@ -96,15 +63,16 @@ export default function MiPerfil() {
   };
 
   const cambiarImagen = async () => {
+    if (!perfil) return
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.8,
       allowsEditing: true,
+      aspect: [1,1]
     });
 
     if (result.canceled || !result.assets?.length) return;
-
-    const uri = result.assets[0].uri;
+    const uri = result.assets[0].uri; 
     const path = `perfiles/avatar_${perfil.id}.jpg`;
     const buffer = await convertirABuffer(uri);
 
@@ -122,16 +90,15 @@ export default function MiPerfil() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
+    // <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ padding: 20, backgroundColor: "#00000060", borderRadius: 10, minWidth: "100%"}}>
+        {(
           <View style={{ alignItems: 'center', gap: 10 }}>
             {perfil?.avatar_url && (
               <Image
+                
                 source={{ uri: perfil.avatar_url }}
-                style={{ width: 80, height: 80, borderRadius: 40 }}
+                style={{ width: 80, height: 80, borderRadius: 40 , borderColor: "white", borderWidth: 2}}
               />
             )}
 
@@ -147,12 +114,14 @@ export default function MiPerfil() {
             ) : (
               <>
                 <TextInput
+                  placeholderTextColor={"#eee"}
                   value={nuevoNombre}
                   onChangeText={setNuevoNombre}
                   placeholder="Tu nombre"
                   style={styles.input}
                 />
                 <TextInput
+                  placeholderTextColor={"#eee"}
                   value={bio}
                   onChangeText={setBio}
                   placeholder="Biografía"
@@ -160,6 +129,7 @@ export default function MiPerfil() {
                   multiline
                 />
                 <TextInput
+                  placeholderTextColor={"#eee"}
                   value={intereses}
                   onChangeText={setIntereses}
                   placeholder="Intereses"
@@ -167,6 +137,7 @@ export default function MiPerfil() {
                   multiline
                 />
                 <TextInput
+                  placeholderTextColor={"#eee"}
                   value={emocional}
                   onChangeText={setEmocional}
                   placeholder="Estado emocional"
@@ -174,18 +145,19 @@ export default function MiPerfil() {
                   multiline
                 />
                 <Button title="Guardar cambios" onPress={actualizarPerfil} />
-                <Button title="Cambiar foto de perfil" onPress={cambiarImagen} color="#888" />
+                <Button title="Cambiar foto de perfil" onPress={cambiarImagen} color="#888" disabled={perfil === null}/>
                 <Button title="Cancelar" color="gray" onPress={() => setEditando(false)} />
               </>
             )}
           </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+    // </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  boton:{width: "100%"},
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -193,11 +165,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
     marginBottom: 10,
+    color: "#fff",
+    
   },
   nombre: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 10,
+    color: "white"
   },
   email: {
     color: '#555',

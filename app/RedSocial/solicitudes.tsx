@@ -95,7 +95,7 @@ export default function Solicitudes() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 20 }}>
+        <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 20, color: "white" }}>
           Solicitudes de amistad
         </Text>
 

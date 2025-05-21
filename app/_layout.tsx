@@ -13,7 +13,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import SplashScreen from '@/components/animations/SplashScreen';
 
 import AuthProvider from "@/providers/AuthProvider"
-
+import FontSizeProvider from "@/providers/FontSizeProvider"
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 ExpoSplashScreen.preventAutoHideAsync();
 // Se inicializa el sistema de controles para audio
@@ -43,6 +43,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
+    <FontSizeProvider>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar style="light" backgroundColor='black'/>
       <GestureHandlerRootView>
@@ -52,6 +53,7 @@ export default function RootLayout() {
       </GestureHandlerRootView>
       
     </ThemeProvider>
+    </FontSizeProvider>
     </AuthProvider>
   );
 }

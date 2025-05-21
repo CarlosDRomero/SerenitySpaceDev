@@ -44,8 +44,9 @@ export default function BuscarUsuarios() {
 
   return (
     <SafeAreaView style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Buscar Usuarios</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: "white" }}>Buscar Usuarios</Text>
       <TextInput
+      placeholderTextColor={"#aaa"}
         placeholder="Escribe un nombre..."
         value={busqueda}
         onChangeText={setBusqueda}
@@ -55,6 +56,7 @@ export default function BuscarUsuarios() {
           padding: 10,
           marginBottom: 20,
           borderRadius: 8,
+          color: "white"
         }}
       />
 

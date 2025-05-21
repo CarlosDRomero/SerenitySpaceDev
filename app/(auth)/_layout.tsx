@@ -1,4 +1,4 @@
-import LogoAutenticacion from '@/components/logos/logo';
+
 import { BlurView } from 'expo-blur';
 import { Slot } from 'expo-router';
 import {
@@ -16,7 +16,7 @@ export default function AuthPageLayout(){
           blurRadius={1}
         >
         <View style={styles.container}>
-        <LogoAutenticacion/>
+        
 
         <Slot/>
         </View>
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: 15,
   },
   logo: {
     

@@ -16,6 +16,7 @@ import RedSocialIndex from '@/components/RedSocial/RedSocialIndex';
 import { useRolPrincipal } from '@/hooks/useRolPrincipal';
 import AlertaUsuario from '@/components/Alertas/AlertaUsuario';
 import { router } from 'expo-router';
+import PantallaAjustes from '@/components/Ajustes';
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,7 +35,7 @@ export default function HomeScreen() {
 
 
 
-  const [pantalla, setPantalla] = useState<'inicio' | 'grupos' | 'grupos2' | 'redsocial' | 'psicologia'>('inicio');
+  const [pantalla, setPantalla] = useState<'inicio' | 'grupos' | 'grupos2' | 'redsocial' | 'psicologia' | 'ajustes'>('inicio');
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -79,7 +80,8 @@ export default function HomeScreen() {
           <View style={styles.contenido}>
             {pantalla === 'grupos' && <ModuloGruposIndex />}
             {pantalla === 'grupos2' && <ModuloGrupos />}   
-            {pantalla === 'redsocial' && <RedSocialIndex />}                     
+            {pantalla === 'redsocial' && <RedSocialIndex />}
+            {pantalla === 'ajustes' && <PantallaAjustes/>}                 
           </View>
 
 
@@ -113,7 +115,7 @@ export default function HomeScreen() {
               <Image source={require('@/assets/Iconos/img_apoyo_emocional.png')} style={styles.icon} />
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setPantalla('ajustes')}>
               <Image source={require('@/assets/Iconos/img_ajustes.png')} style={styles.icon} />
             </TouchableOpacity>
           </View>
