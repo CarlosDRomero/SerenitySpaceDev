@@ -1,7 +1,12 @@
+import { ColorScheme } from '@/constants/Colors';
+import useAjustes from '@/hooks/useAjustes';
+import { FontSize } from '@/providers/FontSizeProvider';
 import React from 'react';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 
 export default function BienvenidaUsuario() {
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   return (
     <View style={styles.container}>
       <Image
@@ -18,31 +23,32 @@ export default function BienvenidaUsuario() {
 }
 
 const { width } = Dimensions.get('window');
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0c0c0c',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  
-  icon: {
-    width: width * 0.3,
-    height: width * 0.3,
-    marginBottom: 18,
-  },
-  title: {
-    fontSize: 20,
-    color: '#ffffff',
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  message: {
-    fontSize: 14,
-    color: '#cccccc',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=> {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 20,
+    },
+
+    icon: {
+      width: width * 0.3,
+      height: width * 0.3,
+      marginBottom: 18,
+    },
+    title: {
+      fontSize: fontSize.titulo,
+      color: colors.text,
+      fontWeight: 'bold',
+      marginBottom: 16,
+      textAlign: 'center',
+    },
+    message: {
+      fontSize: fontSize.parrafo,
+      color: colors.text,
+      textAlign: 'center',
+      lineHeight: 24,
+    },
+  });
+}
