@@ -3,6 +3,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { ModuloType, TemaType } from './editorTypes';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 interface SidebarMenuProps {
   grupoId: string;
@@ -23,6 +26,8 @@ export default function SidebarMenu({
   onAgregarTema,
   onCerrar,
 }: SidebarMenuProps) {
+  const {colors, fontSize, oppositeColors} = useAjustes()
+  const styles = getStyles(colors, fontSize, oppositeColors)
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={onCerrar}>
@@ -64,46 +69,49 @@ export default function SidebarMenu({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0c0c0c',
-    padding: 20,
-  },
-  cerrar: {
-    color: '#FF4E4E',
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  grupoTitulo: {
-    color: '#3C63FF',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  moduloTitulo: {
-    color: 'white',
-    fontSize: 16,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  temaItem: {
-    paddingLeft: 20,
-    marginBottom: 5,
-  },
-  temaTexto: {
-    color: '#aaa',
-    fontSize: 14,
-  },
-  agregarModulo: {
-    color: '#3C63FF',
-    fontWeight: 'bold',
-    marginTop: 20,
-  },
-  agregarTema: {
-    color: '#3C63FF',
-    fontSize: 14,
-    paddingLeft: 20,
-    marginTop: 5,
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize, opposite: ColorScheme)=>{
+ return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      padding: 20,
+    },
+    cerrar: {
+      color: '#FF4E4E',
+      fontWeight: 'bold',
+      marginBottom: 20,
+      fontSize: fontSize.parrafo * 1.1
+    },
+    grupoTitulo: {
+      color: colors.primary,
+      fontSize: fontSize.subtitulo,
+      fontWeight: 'bold',
+      marginBottom: 20,
+    },
+    moduloTitulo: {
+      color: colors.text,
+      fontSize: 16,
+      marginTop: 10,
+      marginBottom: 5,
+    },
+    temaItem: {
+      paddingLeft: 20,
+      marginBottom: 5,
+    },
+    temaTexto: {
+      color: opposite.secondary,
+      fontSize: 14,
+    },
+    agregarModulo: {
+      color: colors.primary,
+      fontWeight: 'bold',
+      marginTop: 20,
+    },
+    agregarTema: {
+      color: colors.primary,
+      fontSize: 14,
+      paddingLeft: 20,
+      marginTop: 5,
+    },
+  });
+}

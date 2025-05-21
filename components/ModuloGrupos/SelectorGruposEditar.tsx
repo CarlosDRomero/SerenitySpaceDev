@@ -3,13 +3,19 @@ import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-nat
 import { fetchGrupos } from './BD/gruposDB';
 import GrupoCard from './GrupoCard';
 import EditorVisualGrupo from './EditorVisual/EditorVisualGrupo';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+
+
 
 export default function SelectorGruposEditar() {
   const [grupos, setGrupos] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
   const [grupoSeleccionado, setGrupoSeleccionado] = useState<string | null>(null);
   const [modoEditorActivo, setModoEditorActivo] = useState(false); // 🚀
-
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   useEffect(() => {
     const cargar = async () => {
       setCargando(true);
@@ -47,7 +53,7 @@ export default function SelectorGruposEditar() {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {cargando ? (
-          <ActivityIndicator size="large" color="#3C63FF" />
+          <ActivityIndicator size="large"/>
         ) : (
           grupos.map((grupo) => (
             <GrupoCard
@@ -65,16 +71,17 @@ export default function SelectorGruposEditar() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0c0c0c',
+    backgroundColor: colors.background,
     padding: 16,
   },
   titulo: {
-    fontSize: 20,
+    fontSize: fontSize.subtitulo,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -82,3 +89,5 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
 });
+}
+

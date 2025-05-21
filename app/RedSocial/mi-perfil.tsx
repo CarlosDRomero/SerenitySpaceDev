@@ -113,11 +113,14 @@ export default function MiPerfil() {
             {!editando ? (
               <>
                 <Text style={styles.nombre}>{perfil?.full_name}</Text>
+                <View>
                 <Text style={styles.email}>{email}</Text>
                 <Text style={styles.campo}>{bio}</Text>
                 <Text style={styles.campo}>{intereses}</Text>
                 <Text style={styles.campo}>{emocional}</Text>
+                </View>
                 <Button title="Editar perfil" onPress={() => setEditando(true)} />
+
               </>
             ) : (
               <>
@@ -183,12 +186,12 @@ const styles = StyleSheet.create({
     color: "white"
   },
   email: {
-    color: '#555',
+    color: "white",
     marginBottom: 10,
   },
   campo: {
     marginVertical: 4,
     fontSize: 14,
-    color: '#333',
+    color: 'white',
   },
 });

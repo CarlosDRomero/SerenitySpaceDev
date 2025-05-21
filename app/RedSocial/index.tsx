@@ -1,13 +1,20 @@
 // /app/RedSocial/index.tsx
 import { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Button, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/utils/supabase';
 import { router } from 'expo-router';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 export default function RedSocialIndex() {
+
+  
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const {colors, fontSize, oppositeColors} = useAjustes()
+  const styles = getStyles(colors, fontSize, oppositeColors)
 
   useEffect(() => {
     const cargarUsuario = async () => {
@@ -51,4 +58,13 @@ export default function RedSocialIndex() {
       </View>
     </SafeAreaView>
   );
+}
+
+const getStyles = (colors:ColorScheme, fontSize:FontSize, opposite: ColorScheme) => {
+  return StyleSheet.create({    
+    Text:{
+
+      
+    }
+  });
 }

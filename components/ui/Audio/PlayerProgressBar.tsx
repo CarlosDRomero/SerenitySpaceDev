@@ -4,7 +4,9 @@ import { useState } from 'react'
 import { StyleSheet, Text, View, ViewProps } from 'react-native'
 import { Slider } from 'react-native-awesome-slider'
 import { useSharedValue } from 'react-native-reanimated'
-
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 interface PlayerProgressBarProps extends ViewProps{
 	duration: number
 	position: number
@@ -25,6 +27,8 @@ export const PlayerProgressBar = ({ style, duration, position, sound }: PlayerPr
 	if (!isSliding.get()) {
 		progress.set(duration > 0 ? position / duration : 0)
 	}
+	const {colors, fontSize, oppositeColors} = useAjustes()
+	const styles = getStyles(colors, fontSize,oppositeColors)
 
 	return (
 		<View style={style}>
@@ -36,8 +40,8 @@ export const PlayerProgressBar = ({ style, duration, position, sound }: PlayerPr
 				thumbWidth={0}
 				renderBubble={() => null}
 				theme={{
-					minimumTrackTintColor: 'rgba(255,255,255,0.6)',
-					maximumTrackTintColor: 'rgba(255,255,255,0.4)',
+					minimumTrackTintColor: oppositeColors.secondary,
+					maximumTrackTintColor: colors.secondary,
 				}}
 				onSlidingStart={async () => {
 					const status = await sound.getStatusAsync()
@@ -70,22 +74,27 @@ export const PlayerProgressBar = ({ style, duration, position, sound }: PlayerPr
 	)
 }
 
-const styles = StyleSheet.create({
-  slider: {
-		height: 7,
-		borderRadius: 16,
-	},
-	timeRow: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'baseline',
-		marginTop: 20,
-	},
-	timeText: {
-		color: "white",
-		opacity: 0.75,
-		fontSize: 12,
-		letterSpacing: 0.7,
-		fontWeight: '500',
-	},
-})
+const getStyles = (colors: ColorScheme, fontSize: FontSize, opposite: ColorScheme)=>{
+ return StyleSheet.create({
+		container: {
+			backgroundColor: colors.background
+		},
+		slider: {
+			height: 7,
+			borderRadius: 16,
+		},
+		timeRow: {
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			alignItems: 'baseline',
+			marginTop: 20,
+		},
+		timeText: {
+			color: colors.text,
+			opacity: 0.75,
+			fontSize: 12,
+			letterSpacing: 0.7,
+			fontWeight: '500',
+		},
+	})
+}

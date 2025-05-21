@@ -1,5 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+
 
 interface GrupoCardProps {
   titulo: string;
@@ -10,6 +14,8 @@ interface GrupoCardProps {
 }
 
 export default function GrupoCard({ titulo, descripcion, imagenUrl, grupoApoyo, onPress }: GrupoCardProps) {
+  const {colors, fontSize, oppositeColors} = useAjustes()
+  const styles = getStyles(colors, fontSize, oppositeColors)
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <ImageBackground
@@ -31,43 +37,44 @@ export default function GrupoCard({ titulo, descripcion, imagenUrl, grupoApoyo, 
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: 15,
-    marginBottom: 16,
-    overflow: 'hidden',
-    elevation: 5,
-  },
-  image: {
-    height: 150,
-    width: '100%',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-end',
-    padding: 8,
-  },
-  badge: {
-    backgroundColor: '#3C63FF',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  badgeText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  info: {
-    padding: 12,
-  },
-  title: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  description: {
-    color: '#aaa',
-    fontSize: 14,
-    marginTop: 4,
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize, opposite: ColorScheme)=>{  
+  return StyleSheet.create({
+    card: {
+      backgroundColor: opposite.background,
+      borderRadius: 15,
+      marginBottom: 16,
+      overflow: 'hidden',
+      elevation: 5,
+    },
+    image: {
+      height: 150,
+      width: '100%',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-end',
+    },
+    badge: {
+      backgroundColor: opposite.primary,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 12,
+    },
+    badgeText: {
+      color: "white",
+      fontSize: fontSize.parrafo,
+      fontWeight: 'bold',
+    },
+    info: {
+      padding: 12,
+    },
+    title: {
+      color: opposite.text,
+      fontSize: fontSize.subtitulo,
+      fontWeight: 'bold',
+    },
+    description: {
+      color: opposite.text,
+      fontSize: fontSize.parrafo,
+      marginTop: 4,
+    },
+  });
+}

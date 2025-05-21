@@ -10,7 +10,9 @@ import {
 } from 'react-native';
 import { ModuloType, TemaType } from './editorTypes';
 import { supabase } from '@/utils/supabase';
-
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 interface ModuloEditorProps {
   grupoId: string;
   moduloSeleccionadoId: string;
@@ -35,7 +37,8 @@ export default function ModuloEditor({
   const [descripcion, setDescripcion] = useState('');
   const [orden, setOrden] = useState('0');
   const [guardando, setGuardando] = useState(false);
-
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   useEffect(() => {
     const encontrado = modulos.find((m) => m.id_m === moduloSeleccionadoId);
     if (encontrado) {
@@ -173,46 +176,51 @@ export default function ModuloEditor({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#0c0c0c',
-    borderRadius: 10,
-  },
-  label: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  input: {
-    backgroundColor: '#1a1a1a',
-    color: 'white',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginBottom: 15,
-  },
-  botonGuardar: {
-    backgroundColor: '#3C63FF',
-    padding: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  botonTexto: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  subtitulo: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  temaItem: {
-    color: '#aaa',
-    marginLeft: 10,
-    marginBottom: 5,
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+ return StyleSheet.create({
+    container: {
+      padding: 20,
+      backgroundColor: colors.secondary,
+      borderRadius: 10,
+    },
+    label: {
+      color: colors.text,
+      fontWeight: 'bold',
+      marginTop: 10,
+      marginBottom: 5,
+      fontSize: fontSize.parrafo
+    },
+    input: {
+      backgroundColor: colors.background,
+      color: colors.text,
+      borderRadius: 10,
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      marginBottom: 15,
+    },
+    botonGuardar: {
+      backgroundColor: colors.primary,
+      padding: 12,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    botonTexto: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: fontSize.parrafo
+    },
+    subtitulo: {
+      color: colors.text,
+      fontSize: fontSize.subtitulo,
+      fontWeight: 'bold',
+      marginTop: 20,
+      marginBottom: 10,
+    },
+    temaItem: {
+      color: colors.text,
+      marginLeft: 10,
+      marginBottom: 5,
+    },
+  });
+}

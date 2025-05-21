@@ -13,6 +13,9 @@ import { WebView } from 'react-native-webview';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { TemaType } from './vistaTypes';
 import AudioPlayer from '@/components/ui/AudioPlayer';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+import useAjustes from '@/hooks/useAjustes';
 
 interface Props {
   temasPorModulo: { [moduloId: string]: TemaType[] };
@@ -36,6 +39,9 @@ export default function VistaContenido({
   const [mostrarVideo, setMostrarVideo] = useState(false);
   const [youtubeEmbedUrl, setYoutubeEmbedUrl] = useState("")
   const videoRef = useRef<Video>(null);
+
+  const {colors, fontSize, oppositeColors} = useAjustes()
+  const styles = getStyles(colors, fontSize, oppositeColors)
 
   const temasDelModulo = moduloSeleccionado
     ? temasPorModulo[moduloSeleccionado] || []
@@ -153,61 +159,63 @@ export default function VistaContenido({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#0c0c0c',
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0c0c0c',
-    padding: 16,
-  },
-  titulo: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 10,
-  },
-  contenido: {
-    fontSize: 16,
-    color: '#ccc',
-    marginBottom: 20,
-  },
-  instruccion: {
-    fontSize: 16,
-    color: '#aaa',
-    textAlign: 'center',
-  },
-  videoContainer: {
-    width: '100%',
-    height: 200,
-    marginTop: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  webView: {
-    flex: 1,
-    borderRadius: 10,
-  },
-  video: {
-    width: Dimensions.get('window').width - 32,
-    height: 200,
-    borderRadius: 10,
-  },
-  miniaturaImagen: {
-    width: Dimensions.get('window').width - 32,
-    height: 160,
-    borderRadius: 8,
-    marginBottom: 6,
-  },
-  miniaturaTexto: {
-    color: '#aaa',
-    textAlign: 'center',
-    marginBottom: 10,
-    fontSize: 14,
-  },
-});
 
+const getStyles = (colors:ColorScheme, fontSize:FontSize, opposite: ColorScheme) => {
+  return StyleSheet.create({
+    container: {
+      padding: 16,
+      backgroundColor: colors.background,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+      padding: 16,
+    },
+    titulo: {
+      fontSize: fontSize.titulo,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 10,
+    },
+    contenido: {
+      fontSize: fontSize.subtitulo,
+      color: colors.text,
+      marginBottom: 20,
+    },
+    instruccion: {
+      fontSize: fontSize.subtitulo,
+      color: colors.text,
+      textAlign: 'center',
+    },
+    videoContainer: {
+      width: '100%',
+      height: 200,
+      marginTop: 10,
+      borderRadius: 10,
+      overflow: 'hidden',
+    },
+    webView: {
+      flex: 1,
+      borderRadius: 10,
+    },
+    video: {
+      width: Dimensions.get('window').width - 32,
+      height: 200,
+      borderRadius: 10,
+    },
+    miniaturaImagen: {
+      width: Dimensions.get('window').width - 32,
+      height: 160,
+      borderRadius: 8,
+      marginBottom: 6,
+    },
+    miniaturaTexto: {
+      color: colors.text,
+      textAlign: 'center',
+      marginBottom: 10,
+      fontSize: fontSize.subtitulo,
+    },
+  });
+}

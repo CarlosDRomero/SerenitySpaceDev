@@ -1,11 +1,16 @@
 // components/PsicoHerramienta/SolicitudesRecibidas.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { supabase } from '@/utils/supabase';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+import TarjetaSolicitud from './TarjetaSolicitud';
 
 export default function SolicitudesRecibidas() {
+  const {colors, fontSize, oppositeColors} = useAjustes()
+  const styles = getStyles(colors, fontSize, oppositeColors)
   const [solicitudes, setSolicitudes] = useState<any[]>([]);
-
   useEffect(() => {
     const obtenerSolicitudes = async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -46,25 +51,7 @@ export default function SolicitudesRecibidas() {
       <Text style={styles.titulo}>Solicitudes Pendientes:</Text>
       {
         solicitudes.map(item => 
-          <View style={styles.card} key={item.id}>
-            <Text style={styles.nombre}>{item.profiles?.full_name}</Text>
-            <Text style={styles.motivo}>Motivo: {item.motivo}</Text>
-            <Text style={styles.fecha}>Fecha: {new Date(item.fecha).toLocaleString()}</Text>
-            <View style={styles.botonesFila}>
-              <TouchableOpacity
-                style={[styles.boton, styles.aceptar]}
-                onPress={() => actualizarEstado(item.id, 'aceptado')}
-              >
-                <Text style={styles.botonTexto}>Aceptar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.boton, styles.rechazar]}
-                onPress={() => actualizarEstado(item.id, 'rechazado')}
-              >
-                <Text style={styles.botonTexto}>Rechazar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <TarjetaSolicitud solicitud={item} key={item.id} actualizarEstado={actualizarEstado}/>
         )
       }
       {/* <FlatList
@@ -96,53 +83,15 @@ export default function SolicitudesRecibidas() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 20,
-  },
-  titulo: {
-    color: 'white',
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  card: {
-    backgroundColor: '#1c1c1c',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  nombre: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  motivo: {
-    color: 'white',
-    marginTop: 4,
-  },
-  fecha: {
-    color: '#aaa',
-    fontSize: 12,
-    marginTop: 4,
-  },
-  botonesFila: {
-    flexDirection: 'row',
-    marginTop: 10,
-    justifyContent: 'space-between',
-  },
-  boton: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 6,
-  },
-  aceptar: {
-    backgroundColor: '#3CFF63',
-  },
-  rechazar: {
-    backgroundColor: '#FF3C63',
-  },
-  botonTexto: {
-    color: '#000',
-    fontWeight: 'bold',
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize, opposite: ColorScheme)=>{
+  return StyleSheet.create({
+    container: {
+      marginVertical: 20,
+    },
+    titulo: {
+      color: colors.text,
+      fontSize: fontSize.subtitulo,
+      marginBottom: 10,
+    }
+  });
+}

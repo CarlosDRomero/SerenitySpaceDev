@@ -8,13 +8,14 @@ import { TouchableOpacityProps } from "react-native-gesture-handler";
 interface BotonTagProps extends TouchableOpacityProps{
   texto: string
   active: boolean
+  onSecondary?: boolean
 }
 
-function getStyles(colors: ColorScheme, fontSize: FontSize, active: boolean) {
+function getStyles(colors: ColorScheme, fontSize: FontSize, active: boolean, onSecondary: boolean) {
   return StyleSheet.create({
     boton: {
       ...styles.botonTop,
-      backgroundColor: active ? colors.primary : colors.secondary,
+      backgroundColor: active ? colors.primary : onSecondary ? colors.background : colors.secondary,
     },
     texto: {
       ...styles.textoBoton,
@@ -24,9 +25,9 @@ function getStyles(colors: ColorScheme, fontSize: FontSize, active: boolean) {
   });
 }
 
-export default function BotonTag({texto, active, style, ...props}: BotonTagProps){
+export default function BotonTag({texto, active, style, onSecondary, ...props}: BotonTagProps){
   const {colors, fontSize} = useAjustes()
-  const dynamicStyles = getStyles(colors, fontSize, active)
+  const dynamicStyles = getStyles(colors, fontSize, active, !!onSecondary)
 
   return (
     <TouchableOpacity style={[dynamicStyles.boton, style]} {...props}>

@@ -1,6 +1,10 @@
 import React from 'react';
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import CardGrupoLista from './CardGrupoLista';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+
 
 interface CarruselGruposListaProps {
   titulo: string;
@@ -9,6 +13,9 @@ interface CarruselGruposListaProps {
 }
 
 export default function CarruselGruposLista({ titulo, grupos, onPressGrupo }: CarruselGruposListaProps) {
+
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   return (
     <View style={styles.section}>
       <Text style={styles.titulo}>{titulo}</Text>
@@ -29,19 +36,24 @@ export default function CarruselGruposLista({ titulo, grupos, onPressGrupo }: Ca
   );
 }
 
-const styles = StyleSheet.create({
-  section: {
-    marginBottom: 20,
-  },
-  titulo: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    paddingLeft: 8,
-  },
-  cardContainer: {
-    width: 240,
-    marginRight: 12,
-  },
-});
+
+const getStyles = (colors:ColorScheme, fontSize:FontSize) => {
+
+    return StyleSheet.create({
+    section: {
+      marginBottom: 20,
+    },
+    titulo: {
+      color: colors.text,
+      fontSize: fontSize.titulo,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      paddingLeft: 8,
+    },
+    cardContainer: {
+      width: 240,
+      marginRight: 12,
+    },
+  });
+
+}

@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { supabase } from '@/utils/supabase';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 interface SesionClinica {
   id: string;
@@ -15,6 +18,8 @@ interface SesionClinica {
 export default function VerSesionesEstudiante() {
   const [sesiones, setSesiones] = useState<SesionClinica[]>([]);
   const [usuarioId, setUsuarioId] = useState<string>('');
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
 
   useEffect(() => {
     const fetchSesiones = async () => {
@@ -75,33 +80,36 @@ export default function VerSesionesEstudiante() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  titulo: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  card: {
-    backgroundColor: '#2a2a2a',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  info: {
-    color: 'white',
-    marginTop: 4,
-  },
-  recomendacion: {
-    color: '#bde0fe',
-    marginTop: 6,
-  },
-  mensaje: {
-    color: '#ccc',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+ return StyleSheet.create({
+    container: {
+      padding: 16,
+    },
+    titulo: {
+      color: colors.text,
+      fontSize: fontSize.titulo,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    card: {
+      backgroundColor: colors.secondary,
+      padding: 12,
+      borderRadius: 8,
+      marginBottom: 12,
+    },
+    info: {
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      marginTop: 4,
+    },
+    recomendacion: {
+      color: colors.primary,
+      marginTop: 6,
+    },
+    mensaje: {
+      color: '#ccc',
+      textAlign: 'center',
+      marginTop: 20,
+    },
+  });
+}

@@ -15,6 +15,10 @@ import {
 } from 'react-native';
 import { supabase } from '@/utils/supabase';
 import CustomSelector from './CustomSelector';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+
 
 interface SesionClinica {
   id: string;
@@ -47,6 +51,8 @@ export default function VerSesiones() {
   const [detalleSesion, setDetalleSesion] = useState<SesionClinica | null>(null);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   const [form, setForm] = useState({
     id: '',
     estudiante: '',
@@ -474,148 +480,153 @@ export default function VerSesiones() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  titulo: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  label: {       // <- Aquí
-    color: 'white',
-    marginTop: 10,
-    marginBottom: 6,
-  },
-  input: {
-    backgroundColor: '#1c1c1c',
-    color: 'white',
-    padding: 10,
-    borderRadius: 6,
-  },
-   textarea: {    // <- Y aquí
-    backgroundColor: '#1c1c1c',
-    color: 'white',
-    padding: 10,
-    borderRadius: 6,
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  switchFila: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  switchLabel: {
-    color: 'white',
-    marginRight: 10,
-  },
-  card: {
-    backgroundColor: '#2a2a2a',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  nombre: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginLeft: 12,  // Agregado margen para separación de la foto
-  },
-  info: {
-    color: 'white',
-    marginTop: 4,
-  },
-  recomendacion: {
-    color: '#bde0fe',
-    marginTop: 6,
-  },
-  descripcion: {
-    color: '#f5cfa1',
-    marginTop: 8,
-  },
-  autor: {
-    color: '#aaa',
-    marginTop: 4,
-    fontStyle: 'italic',
-  },
-  mensaje: {
-    color: '#ccc',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  volver: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  volverTexto: {
-    color: '#3C63FF',
-    fontWeight: 'bold',
-  },
-  button: {
-    backgroundColor: '#3C63FF',
-    padding: 12,
-    marginTop: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    backgroundColor: '#1c1c1c',
-    borderRadius: 12,
-    padding: 20,
-  },
-  modalTitle: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 12,
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
-  avatarGrande: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 12,
-  },
-  headerEstudiante: {
-    flexDirection: 'column', // Cambiado a columna para apilar verticalmente
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  fotoNombreContainer: {
-    flexDirection: 'row', // Foto y nombre al lado
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  nombreEstudiante: {
-    fontSize: 22,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  botonCambiar: {
-    backgroundColor: '#3C63FF',
-    borderRadius: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-  },
-  botonCambiarTexto: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  cardRow: {          
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+ return StyleSheet.create({
+    container: {
+      padding: 16,
+    },
+    titulo: {
+      color: colors.text,
+      fontSize: fontSize.subtitulo,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    label: {       // <- Aquí
+      color: colors.text,
+      marginTop: 10,
+      marginBottom: 6,
+    },
+    input: {
+      backgroundColor: colors.secondary,
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      padding: 10,
+      borderRadius: 6,
+    },
+    textarea: {    // <- Y aquí
+      backgroundColor: colors.secondary,
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      padding: 10,
+      borderRadius: 6,
+      minHeight: 80,
+      textAlignVertical: 'top',
+    },
+    switchFila: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 10,
+      marginBottom: 5,
+    },
+    switchLabel: {
+      color: colors.text,
+      marginRight: 10,
+    },
+    card: {
+      backgroundColor: colors.secondary,
+      padding: 12,
+      borderRadius: 8,
+      marginBottom: 12,
+    },
+    nombre: {
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      fontWeight: 'bold',
+      marginLeft: 12,  // Agregado margen para separación de la foto
+    },
+    info: {
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      marginTop: 4,
+    },
+    recomendacion: {
+      color: colors.primary,
+      marginTop: 6,
+    },
+    descripcion: {
+      color: colors.text,
+      marginTop: 8,
+    },
+    autor: {
+      color: '#aaa',
+      marginTop: 4,
+      fontStyle: 'italic',
+    },
+    mensaje: {
+      color: '#ccc',
+      textAlign: 'center',
+      marginTop: 20,
+    },
+    volver: {
+      marginTop: 20,
+      alignItems: 'center',
+    },
+    volverTexto: {
+      color: '#3C63FF',
+      fontWeight: 'bold',
+    },
+    button: {
+      backgroundColor: '#3C63FF',
+      padding: 12,
+      marginTop: 20,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    modalContainer: {
+      backgroundColor: '#1c1c1c',
+      borderRadius: 12,
+      padding: 20,
+    },
+    modalTitle: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 18,
+      marginBottom: 12,
+    },
+    avatar: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+    },
+    avatarGrande: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      marginRight: 12,
+    },
+    headerEstudiante: {
+      flexDirection: 'column', // Cambiado a columna para apilar verticalmente
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    fotoNombreContainer: {
+      flexDirection: 'row', // Foto y nombre al lado
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    nombreEstudiante: {
+      fontSize: 22,
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    botonCambiar: {
+      backgroundColor: '#3C63FF',
+      borderRadius: 6,
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+    },
+    botonCambiarTexto: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    cardRow: {          
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
 
-});
+  });
+}

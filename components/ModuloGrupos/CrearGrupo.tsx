@@ -13,6 +13,9 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { supabase } from '@/utils/supabase';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 export default function CrearGrupo() {
   const [titulo, setTitulo] = useState('');
@@ -27,6 +30,8 @@ export default function CrearGrupo() {
   const [progresoIcono, setProgresoIcono] = useState(0);
 
   const puedeCrear = !subiendoImagen && !subiendoIcono && titulo.trim() && descripcion.trim() && imagenUrl;
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
 
   const convertirABuffer = async (uri: string, onProgress: (bytes: number, total: number) => void) => {
     const fileInfo = await FileSystem.getInfoAsync(uri);
@@ -202,38 +207,43 @@ export default function CrearGrupo() {
   );
 }
 
-const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    paddingBottom: 50,
-  },
-  container: {
-    padding: 20,
-    backgroundColor: '#0c0c0c',
-  },
-  input: {
-    backgroundColor: '#1a1a1a',
-    color: 'white',
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  button: {
-    backgroundColor: '#3C63FF',
-    padding: 12,
-    borderRadius: 10,
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
-  preview: { width: '100%', height: 150, borderRadius: 10, marginTop: 10 },
-  previewSmall: { width: 80, height: 80, borderRadius: 10, marginTop: 10 },
-  progress: { color: '#aaa', fontSize: 12, marginTop: 5 },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-    justifyContent: 'space-between',
-  },
-  label: { color: 'white', fontSize: 16 },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+  return  StyleSheet.create({
+    scrollContainer: {
+      flexGrow: 1,
+      paddingBottom: 50,
+    },
+    container: {
+      padding: 20,
+      backgroundColor: colors.background,
+    },
+    input: {
+      // backgroundColor: '#1a1a1a',
+      color: colors.text,
+      padding: 12,
+      borderRadius: 10,
+      marginBottom: 15,
+      borderColor: colors.secondary,
+      borderWidth: 2
+    },
+    button: {
+      backgroundColor: colors.primary,
+      padding: 12,
+      borderRadius: 10,
+      marginTop: 10,
+      alignItems: 'center',
+    },
+    buttonText: { color: '#fff', fontWeight: 'bold', fontSize: fontSize.parrafo },
+    preview: { width: '100%', height: 150, borderRadius: 10, marginTop: 10 },
+    previewSmall: { width: 80, height: 80, borderRadius: 10, marginTop: 10 },
+    progress: { color: colors.text, fontSize: fontSize.parrafo, marginTop: 5 },
+    switchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 20,
+      justifyContent: 'space-between',
+    },
+    label: { color: colors.text, fontSize: 16 },
+  });
+
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchGrupoCompleto } from './grupoDB'; 
-import { GrupoType, ModuloType, TemaType } from '../vistaTypes';
+import { GrupoType, ModuloType, TemaType } from './vistaTypes';
 
 export function useGrupoCompleto(idGrupo: string) {
   const [grupo, setGrupo] = useState<GrupoType | null>(null);

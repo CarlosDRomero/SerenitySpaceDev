@@ -6,9 +6,9 @@ import { ThemedText } from '../ThemedText';
 import TrackPlayer from "react-native-track-player"
 import { PlayerProgressBar } from './Audio/PlayerProgressBar';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import useAjustes from '@/hooks/useAjustes';
 
-
-export default function AudioPlayer({ audioUri }) {
+export default function AudioPlayer({ audioUri }: any) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -68,17 +68,18 @@ export default function AudioPlayer({ audioUri }) {
     }
   }
 
+  const {colors, fontSize} = useAjustes()
   if (!sound) return <ActivityIndicator/>
   return (
-    <View className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-2">
+    <View className="w-full rounded-lg p-4 mb-2 bg-gray-300 dark:bg-gray-700">
       <View className="flex-col items-center space-x-3">
         <PlayerProgressBar sound={sound} duration = {duration} position={position} style={{width: "100%"}}/>
         <TouchableOpacity
           onPress={playSound}
           className={cn(
             "w-10 h-10 rounded-full flex items-center justify-center",
-            "bg-blue-500"
           )}
+          style = {{backgroundColor: colors.primary}}
         >
           {
             isPlaying? 

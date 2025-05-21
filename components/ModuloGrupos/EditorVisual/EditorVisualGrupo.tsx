@@ -10,6 +10,9 @@ import { crearTema } from '../BD/temasDB';
 import GrupoEditor from './GrupoEditor';
 import ModuloEditor from './ModuloEditor';
 import TemaEditor from './TemaEditor';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 export default function EditorVisualGrupo({
   grupoId,

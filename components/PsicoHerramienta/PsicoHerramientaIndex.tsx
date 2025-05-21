@@ -9,6 +9,10 @@ import VerSesiones from './VerSesiones'; // Psicólogo
 import VerSesionesEstudiante from './VerSesionesEstudiante'; // Estudiante
 import VerRecomendacionesEstudiante from './VerRecomendacionesEstudiante'; // Estudiante
 import CrearRecomendacion from './CrearRecomendacion'; // Psicólogo
+import BotonTag from "@/components/ui/BotonTag"
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 export default function PsicoHerramientaIndex() {
   const { rolPrincipal, rolesUsuario, cargando } = useRolPrincipal();
@@ -27,7 +31,8 @@ export default function PsicoHerramientaIndex() {
   const esEstudiante = rolPrincipal === 'estudiante';
   const esPsicologo = rolPrincipal === 'psicologo';
   const esInvitado = rolPrincipal === 'invitado';
-
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   useEffect(() => {
     if (cargando) return;
 
@@ -51,64 +56,53 @@ export default function PsicoHerramientaIndex() {
   return (
     <View style={styles.container}>
       {/* Botones según rol */}
-      <View style={styles.botonesTop}>
+      <ScrollView style={styles.botonesTop} horizontal showsHorizontalScrollIndicator = { false }>
         {esEstudiante && (
           <>
-            <TouchableOpacity
-              style={[styles.botonTop, pantalla === 'solicitar' && styles.botonActivo]}
+            <BotonTag
+              texto="Solicitar Apoyo"
+              active={pantalla === 'solicitar'}
               onPress={() => setPantalla('solicitar')}
-            >
-              <Text style={styles.textoBoton}>Solicitar Apoyo</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.botonTop, pantalla === 'ver-sesiones' && styles.botonActivo]}
+            />
+            <BotonTag
+              texto="Mis Sesiones"
+              active={pantalla === 'ver-sesiones'}
               onPress={() => setPantalla('ver-sesiones')}
-            >
-              <Text style={styles.textoBoton}>Mis Sesiones</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.botonTop, pantalla === 'ver-recomendaciones' && styles.botonActivo]}
+            />
+            <BotonTag
+              texto="Recomendaciones"
+              active={pantalla === 'ver-recomendaciones'}
               onPress={() => setPantalla('ver-recomendaciones')}
-            >
-              <Text style={styles.textoBoton}>Recomendaciones</Text>
-            </TouchableOpacity>
+            />
           </>
         )}
 
         {esPsicologo && (
           <>
-            <TouchableOpacity
-              style={[styles.botonTop, pantalla === 'solicitudes' && styles.botonActivo]}
+            <BotonTag
+              texto="Solicitudes Recibidas"
+              active={pantalla === 'solicitudes'}
               onPress={() => setPantalla('solicitudes')}
-            >
-              <Text style={styles.textoBoton}>Solicitudes Recibidas</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.botonTop, pantalla === 'registrar-sesion' && styles.botonActivo]}
+            />
+            <BotonTag
+              texto="Registrar Sesión"
+              active={pantalla === 'registrar-sesion'}
               onPress={() => setPantalla('registrar-sesion')}
-            >
-              <Text style={styles.textoBoton}>Registrar Sesión</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.botonTop, pantalla === 'ver-sesiones' && styles.botonActivo]}
+            />
+            <BotonTag
+              texto="Historial Clínico"
+              active={pantalla === 'ver-sesiones'}
               onPress={() => setPantalla('ver-sesiones')}
-            >
-              <Text style={styles.textoBoton}>Historial Clínico</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.botonTop, pantalla === 'recomendar-grupo' && styles.botonActivo]}
+            />
+            <BotonTag
+              texto="Recomendar Grupo"
+              active={pantalla === 'recomendar-grupo'}
               onPress={() => setPantalla('recomendar-grupo')}
-            >
-              <Text style={styles.textoBoton}>Recomendar Grupo</Text>
-            </TouchableOpacity>
+            />
           </>
         )}
-      </View>
+      </ScrollView>
+
 
       {/* Pantalla activa */}
       <View style={styles.scroll}>
@@ -125,34 +119,22 @@ export default function PsicoHerramientaIndex() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+ return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0c0c0c',
+    backgroundColor: colors.background,
   },
   botonesTop: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
     marginVertical: 10,
+
   },
-  botonTop: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    margin: 5,
-    borderRadius: 20,
-    backgroundColor: '#2a2a2a',
-  },
-  botonActivo: {
-    backgroundColor: '#3C63FF',
-  },
-  textoBoton: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
+
   mensaje: {
-    color: 'white',
-    fontSize: 18,
+    color: colors.text,
+    fontSize: fontSize.subtitulo,
     textAlign: 'center',
     marginVertical: 20,
   },
@@ -160,4 +142,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
 });
-
+}

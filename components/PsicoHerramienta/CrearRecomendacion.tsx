@@ -13,6 +13,9 @@ import {
 } from 'react-native';
 import { supabase } from '@/utils/supabase';
 import CustomSelector from './CustomSelector';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 interface Recomendacion {
   id: string;
@@ -211,7 +214,8 @@ export default function CrearRecomendacion() {
       ]
     );
   };
-
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.sectionTitle}>Crear o Editar Recomendación</Text>
@@ -318,103 +322,108 @@ export default function CrearRecomendacion() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  sectionTitle: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginVertical: 12,
-  },
-  label: {
-    color: 'white',
-    marginTop: 10,
-    marginBottom: 6,
-  },
-  textarea: {
-    backgroundColor: '#1c1c1c',
-    color: 'white',
-    borderRadius: 6,
-    padding: 10,
-    textAlignVertical: 'top',
-  },
-  button: {
-    marginTop: 20,
-    backgroundColor: '#3C63FF',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  mensaje: {
-    color: '#ccc',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  card: {
-    backgroundColor: '#2a2a2a',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  cardTitle: {
-    color: '#bde0fe',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  cardSubtitle: {
-    color: 'white',
-    marginTop: 6,
-  },
-  buttonsRow: {
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-  editButton: {
-    backgroundColor: '#3C63FF',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    marginRight: 10,
-  },
-  deleteButton: {
-    backgroundColor: '#ff3b3b',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  buttonSmallText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  modalContainer: {
-    backgroundColor: '#1c1c1c',
-    borderRadius: 12,
-    padding: 20,
-  },
-  modalTitle: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 12,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  cancelButton: {
-    backgroundColor: '#555',
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+ return StyleSheet.create({
+    container: {
+      padding: 16,
+    },
+    sectionTitle: {
+      color: colors.text,
+      fontWeight: 'bold',
+      fontSize: fontSize.subtitulo,
+      marginVertical: 12,
+    },
+    label: {
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      marginTop: 10,
+      marginBottom: 6,
+    },
+    textarea: {
+      backgroundColor: colors.secondary,
+      color: colors.text,
+      borderRadius: 6,
+      padding: 10,
+      textAlignVertical: 'top',
+    },
+    button: {
+      marginTop: 20,
+      backgroundColor: colors.primary,
+      padding: 14,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    mensaje: {
+      color: '#ccc',
+      textAlign: 'center',
+      marginVertical: 20,
+    },
+    card: {
+      backgroundColor: colors.secondary,
+      padding: 12,
+      borderRadius: 8,
+      marginBottom: 12,
+    },
+    cardTitle: {
+      color: colors.text,
+      fontWeight: 'bold',
+      fontSize: fontSize.titulo,
+    },
+    cardSubtitle: {
+      color: colors.text,
+      fontSize: fontSize.subtitulo,
+      marginTop: 6,
+    },
+    buttonsRow: {
+      flexDirection: 'row',
+      marginTop: 10,
+    },
+    editButton: {
+      backgroundColor: colors.primary,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 6,
+      marginRight: 10,
+    },
+    deleteButton: {
+      backgroundColor: '#ff3b3b',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 6,
+    },
+    buttonSmallText: {
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      fontWeight: 'bold',
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      justifyContent: 'center',
+      padding: 20,
+    },
+    modalContainer: {
+      backgroundColor: colors.background,
+      borderRadius: 12,
+      padding: 20,
+    },
+    modalTitle: {
+      color: colors.text,
+      fontWeight: 'bold',
+      fontSize: fontSize.subtitulo,
+      marginBottom: 12,
+    },
+    modalButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 20,
+    },
+    cancelButton: {
+      backgroundColor: '#555',
+    },
+  });
+}

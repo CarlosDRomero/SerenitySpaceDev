@@ -13,8 +13,16 @@ import { useGrupoCompleto } from './useGrupoCompleto';
 import GrupoInfo from './GrupoInfo';
 import SidebarContenido from './SidebarContenido';
 import VistaContenido from './VistaContenido';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 export default function GrupoVista() {
+
+  const {colors, fontSize, oppositeColors} = useAjustes()
+  const styles = getStyles(colors, fontSize, oppositeColors)
+
+
   const { idGrupo } = useLocalSearchParams<{ idGrupo: string }>();
   const {
     grupo,
@@ -26,7 +34,7 @@ export default function GrupoVista() {
   const [moduloSeleccionado, setModuloSeleccionado] = useState<string | null>(null);
   const [temaSeleccionado, setTemaSeleccionado] = useState<string | null>(null);
   const [mostrarSidebar, setMostrarSidebar] = useState(true);
-  const scale = useRef(new Animated.Value(1)).current; // ✅ CORRECTO
+  const scale = useRef(new Animated.Value(1)).current; 
 
   const reproducirSonido = async () => {
     const { sound } = await Audio.Sound.createAsync(
@@ -104,56 +112,58 @@ export default function GrupoVista() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#0c0c0c',
-  },
-  contenedor: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  sidebar: {
-    width: 260,
-    backgroundColor: '#1a1a1a',
-    paddingTop: 10,
-  },
-  contenido: {
-    flex: 1,
-    backgroundColor: '#0c0c0c',
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0c0c0c',
-  },
-  textoCargando: {
-    color: 'white',
-    fontSize: 16,
-    fontFamily: 'PressStart2P',
-  },
-  botonMostrar: {
-    position: 'absolute',
-    top: 20,
-    left: 10,
-    zIndex: 10,
-    backgroundColor: '#3CA7FF',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 0,
-    borderWidth: 2,
-    borderColor: '#000',
-    shadowColor: '#000',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 4,
-  },
-  botonTexto: {
-    color: '#fff',
-    fontFamily: 'PressStart2P',
-    fontSize: 10,
-    textTransform: 'uppercase',
-  },
-});
+const getStyles = (colors:ColorScheme, fontSize:FontSize, opposite: ColorScheme) => {
+  return  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: '#0c0c0c',
+    },
+    contenedor: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+    sidebar: {
+      width: 260,
+      backgroundColor: '#1a1a1a',
+      paddingTop: 10,
+    },
+    contenido: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    center: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+    },
+    textoCargando: {
+      color: 'white',
+      fontSize: fontSize.titulo,
+      fontFamily: 'PressStart2P',
+    },
+    botonMostrar: {
+      position: 'absolute',
+      top: 20,
+      left: 10,
+      zIndex: 10,
+      backgroundColor: '#3CA7FF',
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      borderRadius: 0,
+      borderWidth: 2,
+      borderColor: '#000',
+      shadowColor: '#000',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 1,
+      shadowRadius: 0,
+      elevation: 4,
+    },
+    botonTexto: {
+      color: '#fff',
+      fontFamily: 'PressStart2P',
+      fontSize: 10,
+      textTransform: 'uppercase',
+    },
+  });
+}

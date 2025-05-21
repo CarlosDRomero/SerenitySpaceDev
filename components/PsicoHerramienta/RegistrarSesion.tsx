@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import { supabase } from '@/utils/supabase';
 import CustomSelector from './CustomSelector';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 export default function RegistrarSesion() {
   const [estudiantes, setEstudiantes] = useState<{ id: string; full_name: string }[]>([]);
@@ -16,7 +19,8 @@ export default function RegistrarSesion() {
     grupo: '',
     etapa: 'evaluacion',
   });
-
+  const {colors, fontSize, oppositeColors} = useAjustes()
+  const styles = getStyles(colors, fontSize, oppositeColors)
   useEffect(() => {
     const fetchData = async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -154,41 +158,44 @@ export default function RegistrarSesion() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 50,
-    paddingHorizontal: 16,
-  },
-  label: {
-    color: 'white',
-    marginTop: 10,
-    marginBottom: 4,
-  },
-  input: {
-    borderColor: '#555',
-    borderWidth: 1,
-    borderRadius: 6,
-    padding: 8,
-    color: 'white',
-  },
-  textarea: {
-    borderColor: '#555',
-    borderWidth: 1,
-    borderRadius: 6,
-    padding: 8,
-    color: 'white',
-    minHeight: 80,
-  },
-  boton: {
-    backgroundColor: '#3C63FF',
-    padding: 12,
-    marginTop: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  botonTexto: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize, opposite: ColorScheme)=>{
+ return StyleSheet.create({
+    container: {
+      paddingBottom: 50,
+      paddingHorizontal: 16,
+    },
+    label: {
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      marginTop: 10,
+      marginBottom: 4,
+    },
+    input: {
+      borderColor: '#555',
+      borderWidth: 1,
+      borderRadius: 6,
+      padding: 8,
+      color: 'white',
+    },
+    textarea: {
+      borderColor: '#555',
+      borderWidth: 1,
+      borderRadius: 6,
+      padding: 8,
+      color: 'white',
+      minHeight: 80,
+    },
+    boton: {
+      backgroundColor: colors.primary,
+      padding: 12,
+      marginTop: 20,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    botonTexto: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
+  });
+}

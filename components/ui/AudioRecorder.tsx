@@ -4,6 +4,10 @@ import { Audio, AVPlaybackStatus } from 'expo-av';
 import * as Haptics from 'expo-haptics';
 import { cn } from '@/cn';
 import AudioPlayer from './AudioPlayer';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+
 interface AudioRecorderProps {
   onAudioSaved: (uri: string) => void
 }
@@ -13,6 +17,7 @@ export default function AudioRecorder({ onAudioSaved }: AudioRecorderProps) {
   const [audioUri, setAudioUri] = useState<string | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
   useEffect(()=>{
     return ()=>{
       if (recordingRef.current){
@@ -123,7 +128,6 @@ export default function AudioRecorder({ onAudioSaved }: AudioRecorderProps) {
     setAudioUri(null);
     setIsPlaying(false);
   }
-
   return (
     <View className="w-full">
       {!audioUri ? (
@@ -135,13 +139,13 @@ export default function AudioRecorder({ onAudioSaved }: AudioRecorderProps) {
           pressRetentionOffset={10000}
           className={cn(
             "h-16 rounded-full flex-row items-center px-4 gap-x-2",
-            isRecording ? "bg-red-500" : "bg-gray-700"
+            isRecording ? "bg-red-500" : "bg-gray-300 dark:bg-gray-700"
           )}
         >
           <View className={cn(
             isRecording ? "w-8 h-8 rounded-sm bg-white" : "w-8 h-8 rounded-full bg-red-500"
           )} />
-          <Text className='text-white font-bold text-wrap'>
+          <Text className='dark:text-white font-bold text-wrap'>
             {
               isRecording? "Grabando..." : "Mantén pulsado para grabar audio"
 
@@ -150,7 +154,7 @@ export default function AudioRecorder({ onAudioSaved }: AudioRecorderProps) {
         </TouchableOpacity>
       ) : (
         <View className="w-full space-y-4">
-          <View className="flex-col justify-between items-center">
+          <View className="flex-col justify-between items-center ">
             <AudioPlayer audioUri={audioUri}/>
 
             <View className="flex-row gap-x-3">

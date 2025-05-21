@@ -15,6 +15,9 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { supabase } from '@/utils/supabase';
 import { GrupoType } from './editorTypes';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 
 interface GrupoEditorProps {
   grupo: GrupoType;
@@ -34,6 +37,8 @@ export default function GrupoEditor({ grupo, onVolver, recargar }: GrupoEditorPr
   const [progresoIcono, setProgresoIcono] = useState(0);
 
   const puedeGuardar = !subiendoImagen && !subiendoIcono && titulo.trim() && descripcion.trim();
+  const {colors, fontSize, oppositeColors} = useAjustes()
+  const styles = getStyles(colors, fontSize, oppositeColors)
 
   const convertirABuffer = async (uri: string, onProgress: (bytes: number, total: number) => void) => {
     const fileInfo = await FileSystem.getInfoAsync(uri);
@@ -214,7 +219,7 @@ export default function GrupoEditor({ grupo, onVolver, recargar }: GrupoEditorPr
         {subiendoIcono && <Text style={styles.progress}>{progresoIcono.toFixed(1)} KB subidos</Text>}
 
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: puedeGuardar ? '#3C63FF' : '#888' }]}
+          style={[styles.button, { backgroundColor: puedeGuardar ? colors.primary : '#888' }]}
           onPress={guardarCambios}
           disabled={!puedeGuardar}
         >
@@ -237,50 +242,55 @@ export default function GrupoEditor({ grupo, onVolver, recargar }: GrupoEditorPr
   );
 }
 
-const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    paddingBottom: 50,
-  },
-  container: {
-    padding: 20,
-    backgroundColor: '#0c0c0c',
-  },
-  input: {
-    backgroundColor: '#1a1a1a',
-    color: 'white',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginBottom: 15,
-  },
-  button: {
-    backgroundColor: '#3C63FF',
-    padding: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  preview: {
-    width: '100%',
-    height: 150,
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  previewSmall: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  progress: {
-    color: '#aaa',
-    fontSize: 12,
-    marginTop: 5,
-  },
-});
-
+const getStyles = (colors: ColorScheme, fontSize: FontSize, opposite: ColorScheme)=>{
+ return StyleSheet.create({
+    scrollContainer: {
+      flexGrow: 1,
+      paddingBottom: 50,
+    },
+    container: {
+      padding: 20,
+      backgroundColor: colors.secondary,
+      borderRadius: 10,
+    },
+    input: {
+      backgroundColor: colors.background,
+      color: colors.text,
+      borderRadius: 10,
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      marginBottom: 15,
+      fontSize: fontSize.parrafo
+    },
+    button: {
+      backgroundColor: colors.primary,
+      padding: 12,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginVertical: 10,
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: fontSize.parrafo
+    },
+    preview: {
+      width: '100%',
+      height: 150,
+      borderRadius: 10,
+      marginTop: 10,
+    },
+    previewSmall: {
+      width: 80,
+      height: 80,
+      borderRadius: 10,
+      marginTop: 10,
+    },
+    progress: {
+      color: opposite.secondary,
+      fontSize: fontSize.parrafo,
+      marginTop: 5,
+      
+    },
+  });
+}

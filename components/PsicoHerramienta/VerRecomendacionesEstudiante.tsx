@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { supabase } from '@/utils/supabase';
-
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 interface Recomendacion {
   id: string;
   grupo_titulo: string;
@@ -13,6 +15,9 @@ interface Recomendacion {
 export default function VerRecomendacionesEstudiante() {
   const [recomendaciones, setRecomendaciones] = useState<Recomendacion[]>([]);
   const [usuarioId, setUsuarioId] = useState<string>('');
+  
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
 
   useEffect(() => {
     const fetchRecomendaciones = async () => {
@@ -70,39 +75,41 @@ export default function VerRecomendacionesEstudiante() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  titulo: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  card: {
-    backgroundColor: '#2a2a2a',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  grupoTitulo: {
-    color: '#bde0fe',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  motivo: {
-    color: 'white',
-    marginTop: 6,
-  },
-  fecha: {
-    color: '#888',
-    marginTop: 4,
-    fontStyle: 'italic',
-  },
-  mensaje: {
-    color: '#ccc',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+ return StyleSheet.create({
+    container: {
+      padding: 16,
+    },
+    titulo: {
+      color: colors.text,
+      fontSize: fontSize.subtitulo,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    card: {
+      backgroundColor: colors.secondary,
+      padding: 12,
+      borderRadius: 8,
+      marginBottom: 12,
+    },
+    grupoTitulo: {
+      color: colors.text,
+      fontWeight: 'bold',
+      fontSize: fontSize.subtitulo,
+    },
+    motivo: {
+      color: colors.text,
+      marginTop: 6,
+    },
+    fecha: {
+      color: '#888',
+      marginTop: 4,
+      fontStyle: 'italic',
+    },
+    mensaje: {
+      color: '#ccc',
+      textAlign: 'center',
+      marginTop: 20,
+    },
+  });
+}

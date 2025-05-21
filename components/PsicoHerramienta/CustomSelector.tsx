@@ -8,7 +8,9 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
 interface Option {
   label: string;
   value: string;
@@ -23,7 +25,8 @@ interface Props {
 
 export default function CustomSelector({ label, options, selectedValue, onValueChange }: Props) {
   const [visible, setVisible] = useState(false);
-
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label || 'Seleccionar...';
 
   return (
@@ -61,47 +64,49 @@ export default function CustomSelector({ label, options, selectedValue, onValueC
   );
 }
 
-const styles = StyleSheet.create({
-  label: {
-    color: 'white',
-    marginBottom: 4,
-  },
-  selector: {
-    backgroundColor: '#1c1c1c',
-    padding: 10,
-    borderRadius: 6,
-  },
-  text: {
-    color: 'white',
-  },
-  modalFondo: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  modalBox: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 8,
-    padding: 20,
-    maxHeight: '80%',
-  },
-  modalTitulo: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  opcion: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#444',
-  },
-  cancelar: {
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  cancelarTexto: {
-    color: '#aaa',
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+ return StyleSheet.create({
+    label: {
+      color: colors.text,
+      marginBottom: 4,
+    },
+    selector: {
+      backgroundColor: colors.secondary,
+      padding: 10,
+      borderRadius: 6,
+    },
+    text: {
+      color: colors.text,
+    },
+    modalFondo: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      justifyContent: 'center',
+      padding: 20,
+    },
+    modalBox: {
+      backgroundColor: colors.background,
+      borderRadius: 8,
+      padding: 20,
+      maxHeight: '80%',
+    },
+    modalTitulo: {
+      color: colors.text,
+      fontSize: fontSize.parrafo,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    opcion: {
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: '#444',
+    },
+    cancelar: {
+      marginTop: 10,
+      alignItems: 'center',
+    },
+    cancelarTexto: {
+      color: '#a44',
+    },
+  });
+}

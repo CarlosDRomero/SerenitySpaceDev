@@ -6,8 +6,15 @@ import { useCargarGrupos } from './VisorListaGrupos/useCargarGrupos';
 import CarruselGruposLista from './VisorListaGrupos/CarruselGruposLista';
 import BuscadorGrupos from './VisorListaGrupos/BuscadorGrupos';
 import SeccionResultados from './VisorListaGrupos/SeccionResultados';
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+import BotonTag from '../ui/BotonTag';
 
 export default function ListaGrupos() {
+
+  const {colors, fontSize} = useAjustes()
+  
   const [pantalla, setPantalla] = useState<'inicio' | 'buscar'>('inicio');
   const [busqueda, setBusqueda] = useState('');
   const { grupos, gruposRecientes, gruposApoyo, cargando } = useCargarGrupos();
@@ -24,24 +31,13 @@ export default function ListaGrupos() {
       params: { idGrupo },
     } as any); // ← usamos `as any` temporalmente para evitar el error de tipado
   };
-
+  const styles = getStyles(colors, fontSize)
   return (
     <View style={styles.container}>
       {/* Botones superiores */}
       <View style={styles.botonesTop}>
-        <TouchableOpacity
-          style={[styles.botonTop, pantalla === 'inicio' && styles.botonActivo]}
-          onPress={() => setPantalla('inicio')}
-        >
-          <Text style={styles.textoBoton}>Inicio</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.botonTop, pantalla === 'buscar' && styles.botonActivo]}
-          onPress={() => setPantalla('buscar')}
-        >
-          <Text style={styles.textoBoton}>Buscar</Text>
-        </TouchableOpacity>
+        <BotonTag texto = "Inicio" onPress={() => setPantalla('inicio')} active={pantalla === 'inicio'}/>
+        <BotonTag texto = "buscar" onPress={() => setPantalla('buscar')} active={pantalla === 'buscar'}/>        
       </View>
 
       {/* Vista Inicio con carruseles */}
@@ -86,35 +82,23 @@ export default function ListaGrupos() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0c0c0c',
-  },
-  botonesTop: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 10,
-  },
-  botonTop: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginHorizontal: 5,
-    borderRadius: 20,
-    backgroundColor: '#2a2a2a',
-  },
-  botonActivo: {
-    backgroundColor: '#3C63FF',
-  },
-  textoBoton: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  scrollContainer: {
-    padding: 16,
-  },
-  buscarContainer: {
-    flex: 1,
-    padding: 16,
-  },
-});
+const getStyles = (colors: ColorScheme, fontSize: FontSize) => {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    botonesTop: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginVertical: 10,
+    },    
+    scrollContainer: {
+      padding: 16,
+    },
+    buscarContainer: {
+      flex: 1,
+      padding: 16,
+    },
+  });
+}

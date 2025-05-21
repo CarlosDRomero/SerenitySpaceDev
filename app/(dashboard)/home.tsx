@@ -17,6 +17,7 @@ import { useRolPrincipal } from '@/hooks/useRolPrincipal';
 import AlertaUsuario from '@/components/Alertas/AlertaUsuario';
 import { router } from 'expo-router';
 import PantallaAjustes from '@/components/Ajustes';
+import BienvenidaUsuario from '@/components/Alertas/BuenvenidaHome';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,6 +37,30 @@ export default function HomeScreen() {
 
 
   const [pantalla, setPantalla] = useState<'inicio' | 'grupos' | 'grupos2' | 'redsocial' | 'psicologia' | 'ajustes'>('inicio');
+
+  /** MODIFICADOS:
+   * ModuloGruposIndex
+   * CardGrupoLista
+   * CarruselGrupoLista
+   * SelectorGruposEditar
+   * GrupoCard
+   * GrupoVista
+   * EditorVisualGrupo
+   * SideBarMenu
+   * GrupoEditor
+   * VistaContenido
+   * TemaEditor
+   * AudioRecorder
+   * AudioPlayer
+   * GrupoInfo
+   * PsicoHerramienta (completo)
+   * SolicitudesRecibidas
+   * RegistrarSesiones
+   * SolicitarApoyo
+   * useGrupoCompleto.ts -- error en un import
+   * Redsocial - Components
+   */
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -81,7 +106,8 @@ export default function HomeScreen() {
             {pantalla === 'grupos' && <ModuloGruposIndex />}
             {pantalla === 'grupos2' && <ModuloGrupos />}   
             {pantalla === 'redsocial' && <RedSocialIndex />}
-            {pantalla === 'ajustes' && <PantallaAjustes/>}                 
+            {pantalla === 'ajustes' && <PantallaAjustes/>}  
+            {pantalla === 'inicio' && <BienvenidaUsuario/>}                  
           </View>
 
 

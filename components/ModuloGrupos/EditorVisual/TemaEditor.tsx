@@ -1,6 +1,6 @@
 // /components/ModuloGrupos/EditorVisual/TemaEditor.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 
 import { supabase } from '@/utils/supabase';
 import { TemaType, tipo_contenido_tema, tipos_contenido } from './editorTypes';
@@ -8,7 +8,10 @@ import AudioRecorder from '@/components/ui/AudioRecorder';
 import { ArchivoDocumentPicker, ArchivoSubido, ArchivoURI, pickPorTipo } from '@/utils/files';
 import useSubirArchivo from '@/hooks/useFileUpload';
 import { cn } from '@/cn';
-
+import useAjustes from '@/hooks/useAjustes';
+import { ColorScheme } from '@/constants/Colors';
+import { FontSize } from '@/providers/FontSizeProvider';
+import BotonTag from '@/components/ui/BotonTag';
 interface TemaEditorProps {
   temas: TemaType[];
   temaSeleccionadoId: string;
@@ -102,6 +105,8 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
     );
   };
   const isYoutubeValid = youtubeUrl.startsWith("https://youtube.com/") || youtubeUrl.startsWith("https://youtu.be/")
+  const {colors, fontSize} = useAjustes()
+  const styles = getStyles(colors, fontSize)
   return (
     <View style={styles.container}>
       {temaActual ? (
@@ -127,17 +132,11 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
           />
 
           <Text style={styles.label}>Tipo de contenido</Text>
-          <View style={styles.optionsRow}>
+          <ScrollView style={styles.optionsRow} horizontal showsHorizontalScrollIndicator = {false}>
             {tipos_contenido.map((tipo) => (
-              <TouchableOpacity
-                key={tipo}
-                style={[styles.optionButton, tipoArchivo === tipo && styles.optionSelected]}
-                onPress={() => setTipoArchivo(tipo as any)}
-              >
-                <Text style={styles.optionText}>{tipo}</Text>
-              </TouchableOpacity>
+              <BotonTag texto={tipo} key={tipo} active = {tipoArchivo === tipo} onSecondary onPress={() => setTipoArchivo(tipo)}/>
             ))}
-          </View>
+          </ScrollView>
 
           {tipoArchivo === 'video' && (
             <>
@@ -225,22 +224,24 @@ export default function TemaEditor({ temas, temaSeleccionadoId, recargar, onVolv
           </TouchableOpacity>
         </>
       ) : (
-        <Text style={{ color: 'white' }}>No hay tema seleccionado.</Text>
+        <Text style={{ color: colors.text }}>No hay tema seleccionado.</Text>
       )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: '#0c0c0c', borderRadius: 10 },
-  label: { color: 'white', fontWeight: 'bold', marginTop: 10 },
-  input: { backgroundColor: '#1a1a1a', color: 'white', borderRadius: 10, padding: 10, marginTop: 5, marginBottom: 10 },
-  optionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 },
-  optionButton: { flex: 1, paddingVertical: 10, marginHorizontal: 5, borderRadius: 10, backgroundColor: '#1a1a1a', alignItems: 'center' },
-  optionSelected: { backgroundColor: '#3C63FF' },
-  optionText: { color: 'white' },
-  boton: { backgroundColor: '#3C63FF', padding: 12, borderRadius: 10, alignItems: 'center', marginVertical: 10 },
-  botonTexto: { color: 'white', fontWeight: 'bold' },
-  progressText: { color: '#aaa', fontSize: 12, marginTop: 5 },
-  miniaturaContainer: { backgroundColor: '#1a1a1a', padding: 10, borderRadius: 8, marginTop: 10 },
+const getStyles = (colors: ColorScheme, fontSize: FontSize)=>{
+ return StyleSheet.create({
+    container: { padding: 20, backgroundColor: colors.secondary, borderRadius: 10 },
+    label: { color: colors.text, fontSize: fontSize.parrafo, fontWeight: 'bold', marginTop: 10 },
+    input: { backgroundColor: colors.background, color: colors.text, fontSize: fontSize.parrafo, borderRadius: 10, padding: 10, marginTop: 5, marginBottom: 10 },
+    optionsRow: { flexDirection: 'row', marginVertical: 10 },
+    optionButton: { flex: 1, paddingVertical: 10, marginHorizontal: 5, borderRadius: 10, backgroundColor: '#1a1a1a', alignItems: 'center' },
+    optionSelected: { backgroundColor: '#3C63FF' },
+    optionText: { color: 'white' },
+    boton: { backgroundColor: colors.primary, padding: 12, borderRadius: 10, alignItems: 'center', marginVertical: 10 },
+    botonTexto: { color: 'white', fontWeight: 'bold' },
+    progressText: { color: '#aaa', fontSize: 12, marginTop: 5 },
+    miniaturaContainer: { backgroundColor: '#1a1a1a', padding: 10, borderRadius: 8, marginTop: 10 },
 });
+}
