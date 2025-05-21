@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react';
 
-interface FontSize{
+export interface FontSize{
   titulo: number,
   subtitulo: number,
   parrafo: number
