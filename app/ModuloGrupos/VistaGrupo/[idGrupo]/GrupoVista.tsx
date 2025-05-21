@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
   Text,
-  Dimensions,
+  Pressable,
+  Animated,
 } from 'react-native';
-
+import { Audio } from 'expo-av';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { useGrupoCompleto } from './useGrupoCompleto';
 import GrupoInfo from './GrupoInfo';
@@ -25,62 +26,89 @@ export default function GrupoVista() {
   const [moduloSeleccionado, setModuloSeleccionado] = useState<string | null>(null);
   const [temaSeleccionado, setTemaSeleccionado] = useState<string | null>(null);
   const [mostrarSidebar, setMostrarSidebar] = useState(true);
+  const scale = useRef(new Animated.Value(1)).current; // ✅ CORRECTO
+
+  const reproducirSonido = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../../../assets/sound/click.mp3')
+    );
+    await sound.playAsync();
+  };
+
+  const animarYMostrarSidebar = async () => {
+    Animated.sequence([
+      Animated.timing(scale, {
+        toValue: 0.9,
+        duration: 80,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: 80,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    await reproducirSonido();
+    setMostrarSidebar(true);
+  };
 
   if (cargando || !grupo) {
     return (
-      <View style={styles.center}>
+      <SafeAreaView style={styles.center}>
         <Text style={styles.textoCargando}>Cargando grupo...</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.contenedor}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.contenedor}>
 
-      {/* Botón para mostrar el sidebar si está oculto */}
-      {!mostrarSidebar && (
-        <TouchableOpacity
-          style={styles.botonMostrar}
-          onPress={() => setMostrarSidebar(true)}
-        >
-          <Text style={styles.botonTexto}>☰ Temas</Text>
-        </TouchableOpacity>
-      )}
+        {!mostrarSidebar && (
+          <Animated.View style={[styles.botonMostrar, { transform: [{ scale }] }]}>
+            <Pressable onPress={animarYMostrarSidebar}>
+              <Text style={styles.botonTexto}>☰ Temas</Text>
+            </Pressable>
+          </Animated.View>
+        )}
 
-      {/* Sidebar */}
-      {mostrarSidebar && (
-        <View style={styles.sidebar}>
-          <SidebarContenido
-            modulos={modulos}
+        {mostrarSidebar && (
+          <View style={styles.sidebar}>
+            <SidebarContenido
+              modulos={modulos}
+              temasPorModulo={temasPorModulo}
+              moduloSeleccionado={moduloSeleccionado}
+              temaSeleccionado={temaSeleccionado}
+              onSeleccionarModulo={(id) => {
+                setModuloSeleccionado(id);
+                setTemaSeleccionado(null);
+              }}
+              onSeleccionarTema={(id) => {
+                setTemaSeleccionado(id);
+                setMostrarSidebar(false);
+              }}
+            />
+          </View>
+        )}
+
+        <View style={styles.contenido}>
+          <GrupoInfo grupo={grupo} />
+          <VistaContenido
             temasPorModulo={temasPorModulo}
             moduloSeleccionado={moduloSeleccionado}
             temaSeleccionado={temaSeleccionado}
-            onSeleccionarModulo={(id) => {
-              setModuloSeleccionado(id);
-              setTemaSeleccionado(null);
-            }}
-            onSeleccionarTema={(id) => {
-              setTemaSeleccionado(id);
-              setMostrarSidebar(false); // Oculta el panel al elegir un tema
-            }}
           />
         </View>
-      )}
-
-      {/* Contenido del tema */}
-      <View style={styles.contenido}>
-        <GrupoInfo grupo={grupo} />
-        <VistaContenido
-          temasPorModulo={temasPorModulo}
-          moduloSeleccionado={moduloSeleccionado}
-          temaSeleccionado={temaSeleccionado}
-        />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#0c0c0c',
+  },
   contenedor: {
     flex: 1,
     flexDirection: 'row',
@@ -103,21 +131,29 @@ const styles = StyleSheet.create({
   textoCargando: {
     color: 'white',
     fontSize: 16,
+    fontFamily: 'PressStart2P',
   },
   botonMostrar: {
     position: 'absolute',
     top: 20,
     left: 10,
     zIndex: 10,
-    backgroundColor: '#3C63FF',
+    backgroundColor: '#3CA7FF',
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingVertical: 10,
+    borderRadius: 0,
+    borderWidth: 2,
+    borderColor: '#000',
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
   },
   botonTexto: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#fff',
+    fontFamily: 'PressStart2P',
+    fontSize: 10,
+    textTransform: 'uppercase',
   },
 });
-
-  

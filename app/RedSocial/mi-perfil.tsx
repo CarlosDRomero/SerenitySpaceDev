@@ -21,10 +21,18 @@ export default function MiPerfil() {
   const [intereses, setIntereses] = useState('');
   const [emocional, setEmocional] = useState('');
   const {profile} = useAuth()
-  useEffect(()=>{
+    useEffect(() => {
     console.log("Profile loaded")
-    if (profile)
-    setPerfil(profile)
+    if (profile) {
+      setPerfil(profile)
+
+      // 👇 Inicializamos los valores del formulario con lo que ya tiene el usuario
+      setNuevoNombre(profile.full_name || "")
+      setBio(profile.biografia || "")
+      setIntereses(profile.intereses || "")
+      setEmocional(profile.estado_emocional || "")
+      setEmail(profile.email || "")
+    }
   }, [profile])
   const actualizarPerfil = async () => {
     const { data: userData } = await supabase.auth.getUser();

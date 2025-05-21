@@ -28,6 +28,7 @@ export default function RootLayout() {
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    PressStart2P: require('../assets/fonts/PressStart2P-Regular.ttf'),
   });
 
   useEffect(() => {
